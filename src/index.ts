@@ -1,3 +1,5 @@
+#!/usr/bin/env node
+
 import packageJson from '../package.json';
 
 const COMMANDS_PATH = './commands/';
