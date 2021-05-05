@@ -1,5 +1,5 @@
 {
-  "name": "devops-wizard",
+  "name": "@appunto/devops-wizard",
   "version": "0.0.1",
   "description": "DevOps Wizard CLI",
   "bin": {
