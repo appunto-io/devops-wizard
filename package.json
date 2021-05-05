@@ -1,6 +1,6 @@
 {
   "name": "@appunto/devops-wizard",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "DevOps Wizard CLI",
   "bin": {
     "dow": "./dist/src/index.js"
