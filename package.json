@@ -1,0 +1,36 @@
+{
+  "name": "devops-wizard",
+  "version": "0.0.1",
+  "description": "DevOps Wizard CLI",
+  "bin": {
+    "dow": "./dist/src/index.js"
+  },
+  "scripts": {
+    "version": "auto-changelog -p && git add CHANGELOG.md",
+    "start": "rm -rf dist && tsc -w",
+    "clean": "rm -rf dist",
+    "dow": "node dist/src/index.js",
+    "test": "jest --watch"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/appunto-io/devops-wizard.git"
+  },
+  "author": "Mattia Longhin <mattia@appunto.io>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/appunto-io/devops-wizard/issues"
+  },
+  "homepage": "https://github.com/appunto-io/devops-wizard#readme",
+  "devDependencies": {
+    "@types/jest": "^26.0.23",
+    "auto-changelog": "^2.2.1",
+    "jest": "^26.6.3",
+    "ts-jest": "^26.5.5",
+    "tslint": "^6.1.3",
+    "typescript": "^4.2.4"
+  },
+  "dependencies": {
+    "yargs": "^15.4.1"
+  }
+}
