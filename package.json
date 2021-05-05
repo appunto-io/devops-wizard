@@ -7,8 +7,9 @@
   },
   "scripts": {
     "version": "auto-changelog -p && git add CHANGELOG.md",
-    "start": "rm -rf dist && tsc -w",
+    "start": "tsc -w",
     "clean": "rm -rf dist",
+    "build": "rm -rf dist && tsc && chmod a+x dist/src/index.js",
     "dow": "node dist/src/index.js",
     "test": "jest --watch"
   },
