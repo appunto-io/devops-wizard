@@ -1,12 +1,8 @@
 import fs from 'fs';
 import path from 'path';
 
-import {PROJECT_CONFIG_FILE} from '../contants/defaults';
+import {PROJECT_CONFIG_FILE, DEFAULT_DOW_JSON} from '../contants/defaults';
 import findRoot from '../tools/find-root';
-
-const DEFAULT_DOW_JSON = {
-  dowJsonVersion : '1.0.0'
-}
 
 export const command = 'init';
 export const aliases = ['i'];
