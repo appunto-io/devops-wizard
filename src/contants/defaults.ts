@@ -1,0 +1,1 @@
+export const PROJECT_CONFIG_FILE = '.dow.json';
