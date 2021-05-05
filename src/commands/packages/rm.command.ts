@@ -1,29 +1,29 @@
 import {Argv, Arguments} from "yargs";
-import runScript from '../../tools/run-script';
 
-export const command = 'add <repository> <name>';
-export const describe = 'Add a submodule for an existing remote repository';
+import runScript from '../../tools/run-script';
+import findRoot from '../../tools/find-root';
+
+export const command = 'rm <name>';
+export const aliases = ['remove']
+export const describe = 'Remove a submodule';
 
 export const builder = (yargs : Argv) =>
   yargs
-  .positional('repository', {
-    describe : 'Remote repository'
-  })
   .positional('name', {
-    describe : 'Local name of the added package'
+    describe : 'Name of submodule to remove'
   })
 
 export const handler = async (argv : Arguments<HandlerArguments>) => {
-  const {repository, name} = argv;
+  const { name } = argv;
+
+  const root = findRoot();
 
   runScript(`
-    git submodule add ${repository} packages/${name}
-    git add packages/${name}
-    git add .gitmodules
-  `, true)
+    git rm packages/${name}
+    rm -rf .git/modules/packages/${name}
+  `, true, {cwd : root})
 }
 
 interface HandlerArguments {
-  repository  : string,
-  name       ?: string,
+  name : string,
 }
