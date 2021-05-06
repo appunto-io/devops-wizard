@@ -1,7 +1,7 @@
 import fs from 'fs';
 import path from 'path';
 
-import { PROJECT_CONFIG_FILE } from '../contants/defaults';
+import { PROJECT_CONFIG_FILE } from '../constants/defaults';
 
 /**
  * Finds the pathname of the parent project

@@ -1,25 +1,25 @@
 import fs from 'fs';
 
 import runScript from './run-script';
-import findRoot from './find-root';
+import assertProject from './assert-project';
 
-import { Template } from '../contants/types';
+import { Global, Template } from '../constants/types';
+declare const global : Global;
 
-const getTemplates = async (repository : string) : Promise<Template[]> => {
-  const root = findRoot();
-  const tmpDirectory = `.tmp${Math.round(Math.random()*100000)}`;
+const getTemplates = async (catalog ?: string) : Promise<Template[]> => {
+  assertProject();
+
+  catalog = catalog || global.config.templatesCatalog;
+
+  const tmpDirectory = await global.tmp.get();
   let templates = [];
-
-  await runScript(`
-    mkdir ${tmpDirectory}
-  `, true, {cwd : root});
 
   try {
     await runScript(`
-      git clone ${repository} ${tmpDirectory}
-    `, false, {cwd : root})
+      git clone ${catalog} ${tmpDirectory}
+    `, false)
 
-    const templateFile = `${root}/${tmpDirectory}/templates.json`;
+    const templateFile = `${tmpDirectory}/templates.json`;
 
     if (!fs.existsSync(templateFile) || !fs.statSync(templateFile).isFile()) {
       throw new Error('Unable to find templates.json file in specified templates repository');
@@ -32,10 +32,6 @@ const getTemplates = async (repository : string) : Promise<Template[]> => {
   catch(error) {
     console.error(error);
   }
-
-  await runScript(`
-    rm -rf ${tmpDirectory}
-  `, true, {cwd : root});
 
   return templates;
 }

@@ -1,13 +1,15 @@
-import fs from 'fs';
 import path from 'path';
 
-import findRoot from './find-root';
-
-import { DEFAULT_DOW_JSON, PROJECT_CONFIG_FILE } from '../contants/defaults';
-import { ProjectConfig } from '../contants/types';
+import { DEFAULT_DOW_JSON, PROJECT_CONFIG_FILE } from '../constants/defaults';
+import { ProjectConfig, Global } from '../constants/types';
+declare const global : Global;
 
 const readConfig = () : ProjectConfig => {
-  const root = findRoot();
+  const root = global.PROJECT_ROOT;
+
+  if (!root) {return DEFAULT_DOW_JSON;}
+
+  // If root exists, it means that a project config file have been found
   const configFile = path.resolve(root, PROJECT_CONFIG_FILE);
   const config = require(configFile);
 

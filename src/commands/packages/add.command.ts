@@ -1,11 +1,19 @@
 import {Argv, Arguments} from "yargs";
+const { prompt } = require('enquirer');
 
 import runScript from '../../tools/run-script';
-import findRoot from '../../tools/find-root';
+import getTemplates from '../../tools/get-templates';
+import assertProject from '../../tools/assert-project';
 
+import { Template, Global } from '../../constants/types';
+declare const global : Global;
+
+
+/*
+  Yargs configuration
+*/
 export const command = 'add <repository> <name>';
 export const describe = 'Add a submodule for an existing remote repository';
-
 export const builder = (yargs : Argv) =>
   yargs
   .positional('repository', {
@@ -14,20 +22,80 @@ export const builder = (yargs : Argv) =>
   .positional('name', {
     describe : 'Local name of the added package'
   })
+  .option('template', {
+    alias : 't',
+    description : 'Initialize the submodule with the specified template',
+    type : 'string',
+  })
+  .option('catalog', {
+    alias : 'c',
+    describe : 'Path to remote repository containing templates definition',
+    type : 'string'
+  })
+  .option('template-repository', {
+    description : 'Une the template in the provided repository',
+    type : 'string',
+  })
 
+/*
+  Command handler
+*/
 export const handler = async (argv : Arguments<HandlerArguments>) => {
-  const {repository, name} = argv;
+  const {repository, name, template, catalog, templateRepository} = argv;
 
-  const root = findRoot();
+  assertProject();
 
+  /*
+    Handle template specification and ask user confirmation
+  */
+  let selectedTemplateRepository;
+  if (templateRepository) {
+    selectedTemplateRepository = templateRepository;
+  }
+  else if (template) {
+    const templates = await getTemplates(catalog);
+    const selectedTemplate = templates.find(({name} : Template) => name === template);
+
+    if (selectedTemplate) {
+      selectedTemplateRepository = selectedTemplate.repository;
+    }
+    else {
+      console.error(`ERROR : Unable to find template '${template}'`)
+      return;
+    }
+  }
+
+  if (selectedTemplateRepository) {
+    const { applyTemplate } = await prompt({
+      type: 'confirm',
+      name: 'applyTemplate',
+      message: `The content of the submodule ${name} will be replaced with the template. Confirm?`
+    })
+
+    if (!applyTemplate) {return;}
+  }
+
+  /*
+    Create submodule
+  */
   await runScript(`
     git submodule add ${repository} packages/${name}
     git add packages/${name}
     git add .gitmodules
-  `, true, {cwd : root})
+  `, true, {cwd : global.PROJECT_ROOT})
+
+  /*
+    Apply template
+  */
+
+
+
+
 }
 
 interface HandlerArguments {
-  repository  : string,
-  name       ?: string,
+  repository    : string,
+  name         ?: string,
+  template     ?: string,
+  catalog      ?: string
 }
