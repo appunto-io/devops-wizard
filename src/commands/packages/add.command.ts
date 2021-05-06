@@ -65,6 +65,7 @@ export const handler = async (argv : Arguments<HandlerArguments>) => {
     }
   }
 
+  let templateDirectory = await global.tmp.get();
   if (selectedTemplateRepository) {
     const { applyTemplate } = await prompt({
       type: 'confirm',
@@ -73,6 +74,15 @@ export const handler = async (argv : Arguments<HandlerArguments>) => {
     })
 
     if (!applyTemplate) {return;}
+
+    try {
+      await runScript(`git clone ${selectedTemplateRepository} ${templateDirectory}`, false);
+    }
+    catch(error) {
+      console.error('ERROR : Unable to download specified template');
+      process.exitCode = 1;
+      return;
+    }
   }
 
   /*
@@ -87,10 +97,17 @@ export const handler = async (argv : Arguments<HandlerArguments>) => {
   /*
     Apply template
   */
+  if (selectedTemplateRepository) {
+    const gitBackup = await global.tmp.get();
 
-
-
-
+    await runScript(`
+      mv packages/${name}/.git ${gitBackup}/
+      rm -rf packages/${name}/**
+      rm -rf ${templateDirectory}/.git
+      cp -rf ${templateDirectory}/** packages/${name}/
+      cp  ${gitBackup}/.git packages/${name}/
+    `, false, {cwd : global.PROJECT_ROOT})
+  }
 }
 
 interface HandlerArguments {
