@@ -1,10 +1,11 @@
 import path from 'path';
 import fs from 'fs';
 
+import ProjectConfig from './ProjectConfig';
 import TmpFactory from './TmpFactory';
 import DowError from './DowError';
 
-import { PROJECT_CONFIG_FILE, DEFAULT_DOW_JSON } from '../constants/defaults';
+import { PROJECT_CONFIG_FILE } from '../constants/defaults';
 
 class Project {
   isValid : boolean;
@@ -28,7 +29,7 @@ class Project {
       throw new DowError("Trying to initialize a project inside a project");
     }
 
-    fs.writeFileSync(PROJECT_CONFIG_FILE, JSON.stringify(DEFAULT_DOW_JSON, null, 2));
+    fs.writeFileSync(path.resolve('.', PROJECT_CONFIG_FILE), JSON.stringify(new ProjectConfig(this).values, null, 2));
 
     this.root = path.resolve('.');
     this.isValid = true;

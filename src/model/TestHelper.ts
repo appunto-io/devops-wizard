@@ -3,6 +3,8 @@ import exec from '../tools/exec';
 
 
 export default class TestHelper {
+  name : string;
+
   tmpDirectory  : string;
   cwd           : string;
   dateHash      : string;
@@ -12,7 +14,8 @@ export default class TestHelper {
   localCwd          : string;
   localTmpDirectory : string;
 
-  constructor(cleanupOnExit = true) {
+  constructor(name : string, cleanupOnExit = true) {
+    this.name = name;
     this.cwd = process.cwd();
     this.dateHash = this.createDateHash();
     this.cleanupOnExit = cleanupOnExit;
@@ -26,7 +29,7 @@ export default class TestHelper {
   }
 
   async beforeAll () {
-    this.tmpDirectory = path.resolve('.', '.teststmp', `${this.dateHash}`);
+    this.tmpDirectory = path.resolve('.', '.teststmp', `${this.dateHash}-${this.name}`);
 
     await exec(`mkdir -p ${this.tmpDirectory}`);
     process.chdir(this.tmpDirectory);

@@ -9,7 +9,7 @@ import exec from '../tools/exec';
 import { PROJECT_CONFIG_FILE, DEFAULT_DOW_JSON } from '../constants/defaults'
 
 import TestHelper from './TestHelper';
-const testHelper = new TestHelper(process.env.CLEANUP_ON_EXIT !== 'false');
+const testHelper = new TestHelper('Project', process.env.CLEANUP_ON_EXIT !== 'false');
 beforeAll(async () => testHelper.beforeAll());
 afterAll(async () => testHelper.afterAll());
 
