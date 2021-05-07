@@ -3,7 +3,6 @@ const { prompt } = require('enquirer');
 
 import runScript from '../../tools/run-script';
 import getTemplates from '../../tools/get-templates';
-import assertProject from '../../tools/assert-project';
 
 import { Template, Global } from '../../constants/types';
 declare const global : Global;
@@ -43,7 +42,7 @@ export const builder = (yargs : Argv) =>
 export const handler = async (argv : Arguments<HandlerArguments>) => {
   const {repository, name, template, catalog, templateRepository} = argv;
 
-  assertProject();
+  global.project.assert();
 
   /*
     Handle template specification and ask user confirmation

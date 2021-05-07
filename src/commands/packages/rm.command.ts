@@ -3,7 +3,6 @@ const { prompt } = require('enquirer');
 
 import runScript from '../../tools/run-script';
 import runCommand from '../../tools/run-command';
-import assertProject from '../../tools/assert-project';
 
 import { Global } from '../../constants/types';
 declare const global : Global;
@@ -26,7 +25,7 @@ export const builder = (yargs : Argv) =>
 export const handler = async (argv : Arguments<HandlerArguments>) => {
   const { name } = argv;
 
-  assertProject();
+  global.project.assert();
 
   const { stdout : modified } = await runCommand(`git status packages/${name} --porcelain`, false, {cwd : global.project.root});
 

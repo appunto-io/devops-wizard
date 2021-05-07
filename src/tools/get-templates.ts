@@ -1,13 +1,12 @@
 import fs from 'fs';
 
 import runScript from './run-script';
-import assertProject from './assert-project';
 
 import { Global, Template } from '../constants/types';
 declare const global : Global;
 
 const getTemplates = async (catalog ?: string) : Promise<Template[]> => {
-  assertProject();
+  global.project.assert();
 
   catalog = catalog || global.config.templatesCatalog;
 

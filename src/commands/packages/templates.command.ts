@@ -1,9 +1,9 @@
 import {Argv, Arguments} from "yargs";
 
 import getTemplates from '../../tools/get-templates';
-import assertProject from '../../tools/assert-project';
 
-import { Template } from '../../constants/types';
+import { Template, Global } from '../../constants/types';
+declare const global : Global;
 
 /*
   Yargs configuration
@@ -24,7 +24,7 @@ export const builder = (yargs : Argv) =>
 export const handler = async (argv : Arguments<HandlerArguments>) => {
   const { catalog } = argv;
 
-  assertProject();
+  global.project.assert();
 
   const templates = await getTemplates(catalog);
 
