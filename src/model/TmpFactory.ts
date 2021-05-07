@@ -1,12 +1,16 @@
 import runScript from '../tools/run-script';
-import { Global } from '../constants/types';
-declare const global : Global;
+import Project from './Project';
 
 /**
  * Handle template directories creation and cleanup
  */
 export default class TmpFactory {
   private directories : string[] = [];
+  private project : Project;
+
+  constructor (project : Project) {
+    this.project = project;
+  }
 
   /**
    * Creates a temporary directory
@@ -14,15 +18,15 @@ export default class TmpFactory {
    * @returns {Promise<string>} the absolute path to the new temporary directory
    */
   async get () {
-    global.project.assert();
+    this.project.assert();
 
     const name = `.tmp${Math.round(Math.random()*100000)}`;
 
-    await runScript(`mkdir ${name}`, false, {cwd : global.project.root});
+    await runScript(`mkdir ${name}`, false, {cwd : this.project.root});
 
     this.directories.push(name);
 
-    return `${global.project.root}/${name}`;
+    return `${this.project.root}/${name}`;
   }
 
   /**
@@ -36,7 +40,7 @@ export default class TmpFactory {
 
     return Promise.all(
       directories.map(
-        name => runScript(`rm -rf ${name}`, false, {cwd : global.project.root})
+        name => runScript(`rm -rf ${name}`, false, {cwd : this.project.root})
       )
     )
   }

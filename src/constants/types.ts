@@ -1,10 +1,8 @@
 
 import Project from '../model/Project';
-import TmpFactory from '../model/TmpFactory';
 
 export interface Global extends NodeJS.Global {
   project : Project;
-  tmp : TmpFactory;
   config : ProjectConfig;
 }
 declare const global : Global;

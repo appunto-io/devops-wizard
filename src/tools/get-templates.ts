@@ -11,7 +11,7 @@ const getTemplates = async (catalog ?: string) : Promise<Template[]> => {
 
   catalog = catalog || global.config.templatesCatalog;
 
-  const tmpDirectory = await global.tmp.get();
+  const tmpDirectory = await global.project.getTmp();
   let templates = [];
 
   try {

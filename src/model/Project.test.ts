@@ -1,7 +1,5 @@
-import util from 'util';
 import path from 'path';
 import fs from 'fs';
-import child_process from 'child_process';
 
 import Project from './Project';
 import DowError from './DowError';

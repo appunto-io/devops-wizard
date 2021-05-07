@@ -1,6 +1,7 @@
 import path from 'path';
 import fs from 'fs';
 
+import TmpFactory from './TmpFactory';
 import DowError from './DowError';
 
 import { PROJECT_CONFIG_FILE, DEFAULT_DOW_JSON } from '../constants/defaults';
@@ -8,10 +9,12 @@ import { PROJECT_CONFIG_FILE, DEFAULT_DOW_JSON } from '../constants/defaults';
 class Project {
   isValid : boolean;
   root : string | null;
+  tmp : TmpFactory;
 
   constructor () {
     this.root = this.findRoot();
     this.isValid = !!this.root;
+    this.tmp = new TmpFactory(this);
   }
 
   /**
@@ -29,15 +32,6 @@ class Project {
 
     this.root = path.resolve('.');
     this.isValid = true;
-  }
-
-  /**
-   * Test if we are in a project folder
-   */
-  assert() {
-    if(!this.isValid) {
-      throw new DowError('You need to be in a project folder');
-    }
   }
 
   /**
@@ -66,6 +60,30 @@ class Project {
     }
 
     return search();
+  }
+
+  /**
+   * Test if we are in a project folder
+   */
+   assert() {
+    if(!this.isValid) {
+      throw new DowError('You need to be in a project folder');
+    }
+  }
+
+  /**
+   * Creates a temporary directory
+   * @returns {Promise<string>} the absolute path of the create tmp directory
+   */
+  async getTmp() {
+    return this.tmp.get();
+  }
+
+  /**
+   * Cleanup temporary directories
+   */
+  async cleanupTmp() {
+    return this.tmp.cleanup();
   }
 }
 

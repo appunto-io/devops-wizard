@@ -65,7 +65,7 @@ export const handler = async (argv : Arguments<HandlerArguments>) => {
     }
   }
 
-  let templateDirectory = await global.tmp.get();
+  let templateDirectory = await global.project.getTmp();
   if (selectedTemplateRepository) {
     const { applyTemplate } = await prompt({
       type: 'confirm',
@@ -98,7 +98,7 @@ export const handler = async (argv : Arguments<HandlerArguments>) => {
     Apply template
   */
   if (selectedTemplateRepository) {
-    const gitBackup = await global.tmp.get();
+    const gitBackup = await global.project.getTmp();
 
     await runScript(`
       mv packages/${name}/.git ${gitBackup}/

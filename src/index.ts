@@ -10,7 +10,6 @@ import {
 import readConfig from './tools/read-config';
 
 import Project from './model/Project';
-import TmpFactory from './model/TmpFactory';
 import DowError from './model/DowError';
 
 import packageJson from '../package.json';
@@ -23,13 +22,12 @@ declare const global: Global;
   Define global values
 */
 global.project = new Project();
-global.tmp = new TmpFactory();
 global.config = readConfig();
 
 /*
   Remove temporary directories on exit
 */
-const cleanup = () => global.tmp.cleanup();
+const cleanup = () => global.project.cleanupTmp();
 process.on('exit', cleanup)
 
 process.on('uncaughtException', (err : any, origin : any) => {
