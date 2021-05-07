@@ -111,4 +111,21 @@ describe('Project initialization', () => {
 
     expect(() => {project.init()}).toThrow(DowError)
   })
+
+  test('Assert should throw if we are not in a project folder', async () => {
+    await exec(`mkdir -p path/to/subdirectory`);
+    process.chdir(path.resolve('.', 'path/to/subdirectory'));
+
+    const project = new Project();
+    expect(() => {project.assert()}).toThrow(DowError)
+  })
+
+  test('Assert should not throw if we are not in a project folder', async () => {
+    await exec(`touch ${PROJECT_CONFIG_FILE}`);
+    await exec(`mkdir -p path/to/subdirectory`);
+    process.chdir(path.resolve('.', 'path/to/subdirectory'));
+
+    const project = new Project();
+    expect(() => {project.assert()}).not.toThrow()
+  })
 })

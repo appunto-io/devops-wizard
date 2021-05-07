@@ -1,13 +1,11 @@
-import runScript from './run-script';
-import assertProject from './assert-project';
-
+import runScript from '../tools/run-script';
 import { Global } from '../constants/types';
 declare const global : Global;
 
 /**
  * Handle template directories creation and cleanup
  */
-export default class Tmp {
+export default class TmpFactory {
   private directories : string[] = [];
 
   /**
@@ -16,7 +14,7 @@ export default class Tmp {
    * @returns {Promise<string>} the absolute path to the new temporary directory
    */
   async get () {
-    assertProject();
+    global.project.assert();
 
     const name = `.tmp${Math.round(Math.random()*100000)}`;
 
@@ -44,7 +42,3 @@ export default class Tmp {
   }
 };
 
-export type TmpType = {
-  get : () => Promise<string>,
-  cleanup : () => Promise<void[]>
-};

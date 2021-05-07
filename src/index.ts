@@ -2,21 +2,20 @@
 
 import fs from 'fs';
 
-
-import { Global } from './constants/types';
 import {
   COMMANDS_PATH,
   SCRIPT_NAME
 } from './constants/defaults';
 
 import readConfig from './tools/read-config';
-import Tmp from './tools/tmp';
 
 import Project from './model/Project';
+import TmpFactory from './model/TmpFactory';
 import DowError from './model/DowError';
 
 import packageJson from '../package.json';
 
+import { Global } from './constants/types';
 declare const global: Global;
 
 
@@ -24,7 +23,7 @@ declare const global: Global;
   Define global values
 */
 global.project = new Project();
-global.tmp = new Tmp();
+global.tmp = new TmpFactory();
 global.config = readConfig();
 
 /*

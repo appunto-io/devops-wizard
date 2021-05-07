@@ -26,6 +26,18 @@ class Project {
     }
 
     fs.writeFileSync(PROJECT_CONFIG_FILE, JSON.stringify(DEFAULT_DOW_JSON, null, 2));
+
+    this.root = path.resolve('.');
+    this.isValid = true;
+  }
+
+  /**
+   * Test if we are in a project folder
+   */
+  assert() {
+    if(!this.isValid) {
+      throw new DowError('You need to be in a project folder');
+    }
   }
 
   /**
