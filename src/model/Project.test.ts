@@ -6,69 +6,20 @@ import child_process from 'child_process';
 import Project from './Project';
 import DowError from './DowError';
 
+import exec from '../tools/exec';
+
 import { PROJECT_CONFIG_FILE, DEFAULT_DOW_JSON } from '../constants/defaults'
-import { fstat } from 'node:fs';
 
-const exec = util.promisify(child_process.exec);
-
-/*
-  Create and remove a local .tmp directory
-  to which the process working directory is
-  changed.
-*/
-let tmpDirectory : string;
-let cwd : string;
-
-beforeAll(async () => {
-  const now = new Date();
-  const pad = (v : number) => `${v}`.padStart(2, '0');
-  const dateHash = `${now.getFullYear()}-${pad(now.getMonth()+1)}-${pad(now.getDate())}_${pad(now.getHours())}-${pad(now.getMinutes())}-${pad(now.getSeconds())}`;
-
-  cwd = process.cwd();
-  tmpDirectory = path.resolve('.', '.teststmp', `${dateHash}`);
-
-  await exec(`mkdir -p ${tmpDirectory}`);
-  process.chdir(tmpDirectory);
-})
-
-afterAll(async () => {
-  process.chdir(cwd);
-
-  /*
-    Should we clear the tmp directories after the test suite is done?
-  */
-  if(process.env.CLEANUP_ON_EXIT !== 'false') {
-    await exec(`rm -rf ${tmpDirectory}`);
-  }
-});
-
-
-/*
-  Keep track of test index to create separate temporary directories
-*/
-let lastTestId = 0;
+import TestHelper from './TestHelper';
+const testHelper = new TestHelper(process.env.CLEANUP_ON_EXIT !== 'false');
+beforeAll(async () => testHelper.beforeAll());
+afterAll(async () => testHelper.afterAll());
 
 /********************************************/
 /********************************************/
 describe('Project initialization', () => {
-  /*
-    Create local temporary directories
-  */
-  let localTmpDirectory : string;
-  let localCwd : string;
-
-  beforeEach(async () => {
-    localCwd = process.cwd();
-    localTmpDirectory = path.resolve('.', `.tmp-${++lastTestId}`);
-
-    await exec(`mkdir ${localTmpDirectory}`);
-    process.chdir(localTmpDirectory);
-  })
-
-  afterEach(async () => {
-    process.chdir(localCwd);
-  });
-
+  beforeEach(async () => testHelper.beforeEach());
+  afterEach(async () => testHelper.afterEach());
 
   /********************************************/
   /********************************************/
