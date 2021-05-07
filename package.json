@@ -11,7 +11,8 @@
     "clean": "rm -rf dist",
     "build": "rm -rf dist && tsc && chmod a+x dist/src/index.js",
     "dow": "node dist/src/index.js",
-    "test": "jest --watch"
+    "test": "jest",
+    "testNoCleanup": "export CLEANUP_ON_EXIT=false && jest"
   },
   "repository": {
     "type": "git",
