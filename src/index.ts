@@ -24,7 +24,6 @@ declare const global: Global;
   Define global values
 */
 global.project = new Project();
-global.PROJECT_ROOT = global.project.root;
 global.tmp = new Tmp();
 global.config = readConfig();
 

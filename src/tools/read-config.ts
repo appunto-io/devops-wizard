@@ -5,7 +5,7 @@ import { ProjectConfig, Global } from '../constants/types';
 declare const global : Global;
 
 const readConfig = () : ProjectConfig => {
-  const root = global.PROJECT_ROOT;
+  const root = global.project.root;
 
   if (!root) {return DEFAULT_DOW_JSON;}
 

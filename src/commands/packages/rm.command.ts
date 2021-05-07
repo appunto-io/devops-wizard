@@ -28,7 +28,7 @@ export const handler = async (argv : Arguments<HandlerArguments>) => {
 
   assertProject();
 
-  const { stdout : modified } = await runCommand(`git status packages/${name} --porcelain`, false, {cwd : global.PROJECT_ROOT});
+  const { stdout : modified } = await runCommand(`git status packages/${name} --porcelain`, false, {cwd : global.project.root});
 
   if (modified) {
     console.error(`ERROR : Submodule ${name} was modified`)
@@ -47,7 +47,7 @@ export const handler = async (argv : Arguments<HandlerArguments>) => {
   runScript(`
     git rm packages/${name}
     rm -rf .git/modules/packages/${name}
-  `, true, {cwd : global.PROJECT_ROOT})
+  `, true, {cwd : global.project.root})
 }
 
 interface HandlerArguments {

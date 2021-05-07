@@ -20,11 +20,11 @@ export default class Tmp {
 
     const name = `.tmp${Math.round(Math.random()*100000)}`;
 
-    await runScript(`mkdir ${name}`, false, {cwd : global.PROJECT_ROOT});
+    await runScript(`mkdir ${name}`, false, {cwd : global.project.root});
 
     this.directories.push(name);
 
-    return `${global.PROJECT_ROOT}/${name}`;
+    return `${global.project.root}/${name}`;
   }
 
   /**
@@ -38,7 +38,7 @@ export default class Tmp {
 
     return Promise.all(
       directories.map(
-        name => runScript(`rm -rf ${name}`, false, {cwd : global.PROJECT_ROOT})
+        name => runScript(`rm -rf ${name}`, false, {cwd : global.project.root})
       )
     )
   }

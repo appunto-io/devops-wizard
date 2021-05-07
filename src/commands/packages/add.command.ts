@@ -92,7 +92,7 @@ export const handler = async (argv : Arguments<HandlerArguments>) => {
     git submodule add ${repository} packages/${name}
     git add packages/${name}
     git add .gitmodules
-  `, true, {cwd : global.PROJECT_ROOT})
+  `, true, {cwd : global.project.root})
 
   /*
     Apply template
@@ -106,7 +106,7 @@ export const handler = async (argv : Arguments<HandlerArguments>) => {
       rm -rf ${templateDirectory}/.git
       cp -rf ${templateDirectory}/** packages/${name}/
       cp  ${gitBackup}/.git packages/${name}/
-    `, false, {cwd : global.PROJECT_ROOT})
+    `, false, {cwd : global.project.root})
   }
 }
 
