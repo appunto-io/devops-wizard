@@ -1,14 +1,19 @@
 #!/usr/bin/env node
 
+import fs from 'fs';
+
+
 import { Global } from './constants/types';
 import {
   COMMANDS_PATH,
   SCRIPT_NAME
 } from './constants/defaults';
 
-import findRoot from './tools/find-root';
 import readConfig from './tools/read-config';
 import Tmp from './tools/tmp';
+
+import Project from './model/Project';
+import DowError from './model/DowError';
 
 import packageJson from '../package.json';
 
@@ -18,7 +23,8 @@ declare const global: Global;
 /*
   Define global values
 */
-global.PROJECT_ROOT = findRoot();
+global.project = new Project();
+global.PROJECT_ROOT = global.project.root;
 global.tmp = new Tmp();
 global.config = readConfig();
 
@@ -27,8 +33,22 @@ global.config = readConfig();
 */
 const cleanup = () => global.tmp.cleanup();
 process.on('exit', cleanup)
-process.on('uncaughtException', cleanup);
-process.on('unhandledRejection', cleanup);
+
+process.on('uncaughtException', (err : any, origin : any) => {
+  process.exitCode = 1;
+
+  if(err instanceof DowError) {
+    cleanup();
+    fs.writeSync(process.stderr.fd, `ERROR: ${err.message}\n`);
+  }
+  else {
+    fs.writeSync(
+      process.stderr.fd,
+      `Caught exception: ${err}\n` +
+      `Exception origin: ${origin}`
+    );
+  }
+});
 
 /*
   Just start a simple instance of yargs parser and delegate commands

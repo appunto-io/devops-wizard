@@ -1,6 +1,8 @@
 import path from 'path';
 import fs from 'fs';
 
+import DowError from './DowError';
+
 import { PROJECT_CONFIG_FILE, DEFAULT_DOW_JSON } from '../constants/defaults';
 
 class Project {
@@ -20,7 +22,7 @@ class Project {
    */
   init () {
     if(this.isValid) {
-      throw new Error("Trying to initialize a project inside a project");
+      throw new DowError("Trying to initialize a project inside a project");
     }
 
     fs.writeFileSync(PROJECT_CONFIG_FILE, JSON.stringify(DEFAULT_DOW_JSON, null, 2));

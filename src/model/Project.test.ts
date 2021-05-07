@@ -4,6 +4,8 @@ import fs from 'fs';
 import child_process from 'child_process';
 
 import Project from './Project';
+import DowError from './DowError';
+
 import { PROJECT_CONFIG_FILE, DEFAULT_DOW_JSON } from '../constants/defaults'
 import { fstat } from 'node:fs';
 
@@ -107,6 +109,6 @@ describe('Project initialization', () => {
 
     const project = new Project();
 
-    expect(() => {project.init()}).toThrow()
+    expect(() => {project.init()}).toThrow(DowError)
   })
 })
