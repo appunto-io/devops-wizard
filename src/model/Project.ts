@@ -12,6 +12,8 @@ class Project {
   root : string | null;
   tmp : TmpFactory;
 
+  private config : ProjectConfig;
+
   constructor () {
     this.root = this.findRoot();
     this.isValid = !!this.root;
@@ -85,6 +87,19 @@ class Project {
    */
   async cleanupTmp() {
     return this.tmp.cleanup();
+  }
+
+  /**
+   * Retrieves the project config
+   *
+   * @returns {ProjectConfig}
+   */
+  getConfig() {
+    if(!this.config) {
+      this.config = new ProjectConfig(this);
+    }
+
+    return this.config;
   }
 }
 
