@@ -1,5 +1,6 @@
 import {Argv, Arguments} from "yargs";
-const { prompt } = require('enquirer');
+import tmp from 'tmp';
+import { prompt } from 'enquirer';
 
 import runScript from '../../tools/run-script';
 import getTemplates from '../../tools/get-templates';
@@ -64,9 +65,9 @@ export const handler = async (argv : Arguments<HandlerArguments>) => {
     }
   }
 
-  let templateDirectory = await global.project.getTmp();
+  let templateDirectory : string = tmp.dirSync().name;
   if (selectedTemplateRepository) {
-    const { applyTemplate } = await prompt({
+    const { applyTemplate } = await prompt<{applyTemplate : boolean}>({
       type: 'confirm',
       name: 'applyTemplate',
       message: `The content of the submodule ${name} will be replaced with the template. Confirm?`
@@ -97,7 +98,7 @@ export const handler = async (argv : Arguments<HandlerArguments>) => {
     Apply template
   */
   if (selectedTemplateRepository) {
-    const gitBackup = await global.project.getTmp();
+    const gitBackup : string = tmp.dirSync().name;
 
     await runScript(`
       mv packages/${name}/.git ${gitBackup}/

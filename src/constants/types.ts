@@ -3,7 +3,6 @@ import Project from '../model/Project';
 
 export interface Global extends NodeJS.Global {
   project : Project;
-  config : ProjectConfig;
 }
 declare const global : Global;
 

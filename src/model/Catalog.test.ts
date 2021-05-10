@@ -49,12 +49,12 @@ describe('Catalog', () => {
     expect(catalog.templates).toEqual([]);
   });
 
-  test('Fail loading if there is no project', () => {
-    const project = new Project();
-    const catalog = new Catalog(project);
+  // test('Load default catalog', async () => {
+  //   const project = new Project();
+  //   const catalog = new Catalog(project);
 
-    expect(catalog.load()).rejects.toBeInstanceOf(DowError);
-  })
+  //   expect(await catalog.load()).toEqual([]);
+  // })
 
   test('Load catalog', async () => {
     const catalogdir  = path.resolve('.', 'testcatalog');

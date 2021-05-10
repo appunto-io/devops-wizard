@@ -1,4 +1,5 @@
 import fs from 'fs';
+import tmp from 'tmp';
 
 import Project from "./Project";
 import Template, { TemplateParameters } from './Template';
@@ -23,17 +24,15 @@ class Catalog {
    * @returns {Template[]} A list of templates
    */
   async load () {
-    const tmp : string = await this.project.getTmp();
-    const catalog : string = this.project.getConfig().values.templatesCatalog;
-
-    let templates : TemplateParameters[]= [];
-
     try {
-      await runScript(`
-        git clone ${catalog} ${tmp}
-      `, false)
+      const tmpDirectory : string = tmp.dirSync().name;
+      const catalog : string = this.project.getConfig().values.templatesCatalog;
 
-      const templateFile = `${tmp}/templates.json`;
+      let templates : TemplateParameters[]= [];
+
+      await runScript(`git clone ${catalog} ${tmpDirectory}/`, false);
+
+      const templateFile = `${tmpDirectory}/templates.json`;
 
       if (!fs.existsSync(templateFile) || !fs.statSync(templateFile).isFile()) {
         throw new DowError('Unable to find templates.json file in specified templates repository');
@@ -42,13 +41,13 @@ class Catalog {
       const templatesConfig : {templates : TemplateParameters[]} = require(templateFile);
 
       templates = (templatesConfig || {templates : []}).templates;
+
+      this.templates = templates.map((template : TemplateParameters) => new Template(template));
+      return this.templates;
     }
     catch(error) {
       console.error(error);
     }
-
-    this.templates = templates.map((template : TemplateParameters) => new Template(template));
-    return this.templates;
   }
 }
 

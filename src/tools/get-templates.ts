@@ -1,4 +1,5 @@
 import fs from 'fs';
+import tmp from 'tmp';
 
 import runScript from './run-script';
 
@@ -8,9 +9,9 @@ declare const global : Global;
 const getTemplates = async (catalog ?: string) : Promise<Template[]> => {
   global.project.assert();
 
-  catalog = catalog || global.config.templatesCatalog;
+  catalog = catalog || global.project.getConfig().values.templatesCatalog;
 
-  const tmpDirectory = await global.project.getTmp();
+  const tmpDirectory : string = tmp.dirSync().name;
   let templates = [];
 
   try {

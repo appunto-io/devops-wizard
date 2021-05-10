@@ -1,13 +1,12 @@
 #!/usr/bin/env node
 
 import fs from 'fs';
+import tmp from 'tmp';
 
 import {
   COMMANDS_PATH,
   SCRIPT_NAME
 } from './constants/defaults';
-
-import readConfig from './tools/read-config';
 
 import Project from './model/Project';
 import DowError from './model/DowError';
@@ -17,24 +16,23 @@ import packageJson from '../package.json';
 import { Global } from './constants/types';
 declare const global: Global;
 
+/*
+  Ask tmp to remove all temporary directories on exit
+*/
+tmp.setGracefulCleanup();
 
 /*
   Define global values
 */
 global.project = new Project();
-global.config = readConfig();
 
 /*
   Remove temporary directories on exit
 */
-const cleanup = () => global.project.cleanupTmp();
-process.on('exit', cleanup)
-
 process.on('uncaughtException', (err : any, origin : any) => {
   process.exitCode = 1;
 
   if(err instanceof DowError) {
-    cleanup();
     fs.writeSync(process.stderr.fd, `ERROR: ${err.message}\n`);
   }
   else {
