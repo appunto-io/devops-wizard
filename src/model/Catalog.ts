@@ -5,48 +5,53 @@ import Project from "./Project";
 import Template, { TemplateParameters } from './Template';
 import DowError from './DowError';
 
-import runScript from '../tools/run-script';
+import runScriptSync from '../tools/run-script-sync';
 
 /**
  * Handles the list of templates referenced by this project
  */
 class Catalog {
-  private catalogUrl : string;
-  templates : Template[];
+  readonly catalogUrl : string;
+  templates : Template[] = [];
 
-  constructor (catalogUrl : string) {
+  constructor (catalogUrl ?: string) {
     this.catalogUrl = catalogUrl;
-    this.templates = [];
+    this.templates = this.load();
   }
 
   /**
    * Loads catalog
    * @returns {Template[]} A list of templates
    */
-  async load () {
+  private load () : Template[] {
+    if (!this.catalogUrl) {return [];}
+
+    const tmpDirectory : string = tmp.dirSync().name;
+
+    let templates : TemplateParameters[]= [];
+
     try {
-      const tmpDirectory : string = tmp.dirSync().name;
-
-      let templates : TemplateParameters[]= [];
-
-      await runScript(`git clone ${this.catalogUrl} ${tmpDirectory}/`, false);
-
-      const templateFile = `${tmpDirectory}/templates.json`;
-
-      if (!fs.existsSync(templateFile) || !fs.statSync(templateFile).isFile()) {
-        throw new DowError('Unable to find templates.json file in specified templates repository');
-      }
-
-      const templatesConfig : {templates : TemplateParameters[]} = require(templateFile);
-
-      templates = (templatesConfig || {templates : []}).templates;
-
-      this.templates = templates.map((template : TemplateParameters) => new Template(template));
-      return this.templates;
+      runScriptSync(`git clone ${this.catalogUrl} ${tmpDirectory}/`, false, {stdio : 'ignore'});
     }
     catch(error) {
-      console.error(error);
+      console.error(`  ERROR: Unable to catalog ${this.catalogUrl}. Aborting.`)
+      return [];
     }
+
+    const templateFile = `${tmpDirectory}/templates.json`;
+
+    if (!fs.existsSync(templateFile) || !fs.statSync(templateFile).isFile()) {
+      console.error('  ERROR: Unable to find templates.json file in specified templates repository. Aborting.');
+      return [];
+    }
+
+    const templatesConfig : {templates : TemplateParameters[]} = require(templateFile);
+
+    templates = (templatesConfig || {templates : []}).templates;
+
+    this.templates = templates.map((template : TemplateParameters) => new Template(template));
+
+    return this.templates;
   }
 }
 

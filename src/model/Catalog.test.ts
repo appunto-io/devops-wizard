@@ -43,7 +43,7 @@ describe('Catalog', () => {
   /********************************************/
   /********************************************/
   test('Initialization of empty catalog', async () => {
-    const catalog = new Catalog('');
+    const catalog = new Catalog();
 
     expect(catalog.templates).toEqual([]);
   });
@@ -65,7 +65,6 @@ describe('Catalog', () => {
     process.chdir(projectdir);
 
     const catalog = new Catalog(catalogdir);
-    await catalog.load();
 
     expect(catalog.templates.length).toEqual(TEST_CATALOG.templates.length)
     expect(catalog.templates[0].name).toEqual(TEST_CATALOG.templates[0].name)

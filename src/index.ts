@@ -36,11 +36,19 @@ process.on('uncaughtException', (err : any, origin : any) => {
     fs.writeSync(process.stderr.fd, `ERROR: ${err.message}\n`);
   }
   else {
-    fs.writeSync(
-      process.stderr.fd,
-      `Caught exception: ${err}\n` +
-      `Exception origin: ${origin}`
-    );
+    if(global.dowDebug) {
+      fs.writeSync(
+        process.stderr.fd,
+        `Caught exception: ${err}\n` +
+        `Exception origin: ${origin}`
+      );
+    }
+    else {
+      fs.writeSync(
+        process.stderr.fd,
+        'Internal error. Use --debug to get more information.'
+      );
+    }
   }
 });
 
@@ -53,9 +61,44 @@ require('yargs')
   .help()
   .version(packageJson.version)
   .scriptName(SCRIPT_NAME)
+  .options({
+    'debug' : {
+      default : false,
+      global : true,
+      type : 'boolean'
+    }
+  })
+  .middleware([
+    ({debug} : {debug : 'boolean'}) => {
+      global.dowDebug = debug;
+    }
+  ])
   .demandCommand(1, 'You need at least one command')
   .commandDir(
     COMMANDS_PATH,
     {extensions: ['command.js']}
   )
+  .fail((msg : string, err : any) => {
+    if (err) {
+      process.exitCode = 1;
+
+      if(err instanceof DowError) {
+        fs.writeSync(process.stderr.fd, `ERROR: ${err.message}\n`);
+      }
+      else {
+        if(global.dowDebug) {
+          fs.writeSync(
+            process.stderr.fd,
+            `Caught exception: ${err}\n`
+          );
+        }
+        else {
+          fs.writeSync(
+            process.stderr.fd,
+            '  UNEXPECTED ERROR. Use --debug to get more information.\n'
+          );
+        }
+      }
+    }
+  })
   .argv;
