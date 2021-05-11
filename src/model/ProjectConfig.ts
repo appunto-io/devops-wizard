@@ -43,7 +43,7 @@ class ProjectConfig {
 
 export interface ProjectConfigValues {
   dowJsonVersion : string,
-  templatesCatalog : string
+  catalogs : string[]
 }
 
 export default ProjectConfig;

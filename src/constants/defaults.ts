@@ -10,5 +10,5 @@ export const DEFAULT_TEMPLATES_CATALOG = 'https://github.com/appunto-io/dow-temp
 
 export const DEFAULT_DOW_JSON : ProjectConfig = {
   dowJsonVersion : '1.0.0',
-  templatesCatalog : DEFAULT_TEMPLATES_CATALOG
+  catalogs : [DEFAULT_TEMPLATES_CATALOG]
 };

@@ -43,18 +43,10 @@ describe('Catalog', () => {
   /********************************************/
   /********************************************/
   test('Initialization of empty catalog', async () => {
-    const project = new Project();
-    const catalog = new Catalog(project);
+    const catalog = new Catalog('');
 
     expect(catalog.templates).toEqual([]);
   });
-
-  // test('Load default catalog', async () => {
-  //   const project = new Project();
-  //   const catalog = new Catalog(project);
-
-  //   expect(await catalog.load()).toEqual([]);
-  // })
 
   test('Load catalog', async () => {
     const catalogdir  = path.resolve('.', 'testcatalog');
@@ -70,17 +62,9 @@ describe('Catalog', () => {
     await exec('git add -A');
     await exec('git commit -m "catalog"');
 
-
     process.chdir(projectdir);
 
-    const project = new Project();
-    project.init();
-    const config = project.getConfig();
-
-    config.values.templatesCatalog = catalogdir;
-    config.save();
-
-    const catalog = new Catalog(project);
+    const catalog = new Catalog(catalogdir);
     await catalog.load();
 
     expect(catalog.templates.length).toEqual(TEST_CATALOG.templates.length)

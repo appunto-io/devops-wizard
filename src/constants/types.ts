@@ -9,7 +9,7 @@ declare const global : Global;
 
 export interface ProjectConfig {
   dowJsonVersion : string,
-  templatesCatalog : string
+  catalogs : string[]
 }
 
 export interface Template {

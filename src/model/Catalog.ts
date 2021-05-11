@@ -11,11 +11,11 @@ import runScript from '../tools/run-script';
  * Handles the list of templates referenced by this project
  */
 class Catalog {
-  private project : Project;
+  private catalogUrl : string;
   templates : Template[];
 
-  constructor (project : Project) {
-    this.project = project;
+  constructor (catalogUrl : string) {
+    this.catalogUrl = catalogUrl;
     this.templates = [];
   }
 
@@ -26,11 +26,10 @@ class Catalog {
   async load () {
     try {
       const tmpDirectory : string = tmp.dirSync().name;
-      const catalog : string = this.project.getConfig().values.templatesCatalog;
 
       let templates : TemplateParameters[]= [];
 
-      await runScript(`git clone ${catalog} ${tmpDirectory}/`, false);
+      await runScript(`git clone ${this.catalogUrl} ${tmpDirectory}/`, false);
 
       const templateFile = `${tmpDirectory}/templates.json`;
 

@@ -9,7 +9,7 @@ declare const global : Global;
 const getTemplates = async (catalog ?: string) : Promise<Template[]> => {
   global.project.assert();
 
-  catalog = catalog || global.project.getConfig().values.templatesCatalog;
+  catalog = catalog || global.project.getConfig().values.catalogs[0];
 
   const tmpDirectory : string = tmp.dirSync().name;
   let templates = [];
