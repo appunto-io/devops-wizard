@@ -3,7 +3,7 @@ import {Argv} from "yargs";
 /*
   Yargs configuration
 */
-export const command = 'catalog';
+export const command = 'catalogs';
 export const aliases = ['catalog', 'c'];
 export const describe = 'Manage templates catalog';
 export const builder = (yargs : Argv) =>

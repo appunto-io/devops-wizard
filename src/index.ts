@@ -2,6 +2,7 @@
 
 import fs from 'fs';
 import tmp from 'tmp';
+import { Argv } from 'yargs';
 
 import {
   COMMANDS_PATH,
@@ -36,19 +37,19 @@ process.on('uncaughtException', (err : any, origin : any) => {
     fs.writeSync(process.stderr.fd, `ERROR: ${err.message}\n`);
   }
   else {
-    if(global.dowDebug) {
+    // if(global.dowDebug) {
       fs.writeSync(
         process.stderr.fd,
         `Caught exception: ${err}\n` +
         `Exception origin: ${origin}`
       );
-    }
-    else {
-      fs.writeSync(
-        process.stderr.fd,
-        'Internal error. Use --debug to get more information.'
-      );
-    }
+    // }
+    // else {
+    //   fs.writeSync(
+    //     process.stderr.fd,
+    //     'Internal error. Use --debug to get more information.\n'
+    //   );
+    // }
   }
 });
 
@@ -74,11 +75,12 @@ require('yargs')
     }
   ])
   .demandCommand(1, 'You need at least one command')
+  .strictCommands()
   .commandDir(
     COMMANDS_PATH,
     {extensions: ['command.js']}
   )
-  .fail((msg : string, err : any) => {
+  .fail((msg : string, err : any, yargs : Argv) => {
     if (err) {
       process.exitCode = 1;
 
@@ -99,6 +101,12 @@ require('yargs')
           );
         }
       }
+    }
+    if (msg) {
+      console.error(yargs.help());
+      console.error("")
+      console.error(msg)
+      process.exit(1)
     }
   })
   .argv;
