@@ -15,10 +15,11 @@ const runScriptSync = (script : string, verbose ?: boolean, options ?: any) => {
 
     for(var l = 0; l < lines.length; l++) {
       const stdout = execSync(lines[l], options);
+      const stdoutString = stdout && stdout.toString() || '';
 
       if (verbose) {
-        if (stdout) {
-          console.log(stdout);
+        if (stdoutString) {
+          console.log(stdoutString);
         }
       }
     }

@@ -13,6 +13,10 @@ export interface ProjectConfig {
   catalogs : string[]
 }
 
+export interface PackageConfig {
+  dowJsonVersion : string
+}
+
 export interface Template {
   name : string,
   description ?: string,

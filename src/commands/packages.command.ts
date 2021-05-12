@@ -3,8 +3,8 @@ import {Argv} from "yargs";
 /*
   Yargs configuration
 */
-export const command = 'package';
-export const aliases = ['packages', 'p'];
+export const command = 'packages';
+export const aliases = ['package', 'p'];
 export const describe = 'Handle project packages';
 export const builder = (yargs : Argv) =>
   yargs

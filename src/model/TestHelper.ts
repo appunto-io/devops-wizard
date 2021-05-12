@@ -1,5 +1,6 @@
 import path from 'path';
 import exec from '../tools/exec';
+import tmp from 'tmp';
 
 
 export default class TestHelper {
@@ -33,6 +34,8 @@ export default class TestHelper {
 
     await exec(`mkdir -p ${this.tmpDirectory}`);
     process.chdir(this.tmpDirectory);
+    // Create a git repository to avoid polluting source code repo
+    await exec(`git init`);
   }
 
   async afterAll() {

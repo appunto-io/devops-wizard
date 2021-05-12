@@ -1,5 +1,6 @@
 import path from 'path';
 import fs from 'fs';
+import { execSync } from 'child_process';
 
 import ProjectConfig from './ProjectConfig';
 import DowError from './DowError';
@@ -29,6 +30,8 @@ class Project {
     }
 
     fs.writeFileSync(path.resolve('.', PROJECT_CONFIG_FILE), JSON.stringify(new ProjectConfig(this).values, null, 2));
+    execSync('git init -q');
+    execSync(`git add ${PROJECT_CONFIG_FILE}`);
 
     this.root = path.resolve('.');
     this.isValid = true;

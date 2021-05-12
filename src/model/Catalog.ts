@@ -34,7 +34,7 @@ class Catalog {
       runScriptSync(`git clone ${this.catalogUrl} ${tmpDirectory}/`, false, {stdio : 'ignore'});
     }
     catch(error) {
-      console.error(`  ERROR: Unable to catalog ${this.catalogUrl}. Aborting.`)
+      console.error(`  ERROR: Unable to clone catalog ${this.catalogUrl}. Aborting.`)
       return [];
     }
 
