@@ -105,6 +105,13 @@ class Project {
     )
   }
 
+  /**
+   * Create a new package
+   * @param {string} name Name of the package
+   * @param {string} repository Remote repository
+   * @param options can contain templateRepository option
+   * @returns {Package} the Package object of the newly create submodule package
+   */
   addPackage(name : string, repository : string, options ?: {templateRepository : string}) : Package {
     const templateRepository : string = options?.templateRepository;
 
@@ -167,6 +174,10 @@ class Project {
     return pkg;
   }
 
+  /**
+   * Remove a package
+   * @param {string} name Name of the package to be removed
+   */
   removePackage(name : string) {
     const modified : boolean = !!execSync(`git status ${PACKAGES_DIRECTORY}/${name} --porcelain`, {cwd : this.root}).toString();
 
