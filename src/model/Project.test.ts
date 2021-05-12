@@ -2,6 +2,7 @@ import path from 'path';
 import fs from 'fs';
 
 import Project from './Project';
+import Catalog from './Catalog';
 import DowError from './DowError';
 
 import exec from '../tools/exec';
@@ -76,5 +77,13 @@ describe('Project initialization', () => {
 
     const project = new Project();
     expect(() => {project.assert()}).not.toThrow()
+  })
+
+  test('Retrieve catalogs', () => {
+    const project = new Project();
+    const catalogs = project.getCatalogs();
+
+    expect(catalogs.length).toBe(1);
+    expect(catalogs[0]).toBeInstanceOf(Catalog);
   })
 })

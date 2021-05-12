@@ -14,6 +14,11 @@ class Catalog {
   readonly catalogUrl : string;
   templates : Template[] = [];
 
+  /**
+   * Constructor
+   * 
+   * @param {string} [catalogUrl] Url of templates catalog repository
+   */
   constructor (catalogUrl ?: string) {
     this.catalogUrl = catalogUrl;
     this.templates = this.load();

@@ -3,6 +3,7 @@ import fs from 'fs';
 import { execSync } from 'child_process';
 
 import ProjectConfig from './ProjectConfig';
+import Catalog from './Catalog';
 import DowError from './DowError';
 
 import { PROJECT_CONFIG_FILE } from '../constants/defaults';
@@ -85,6 +86,19 @@ class Project {
     }
 
     return this.config;
+  }
+
+  /**
+   * Retrieves the templates catalogs associated with the project
+   *
+   * @returns {Catalog[]} An array of Catalog objects
+   */
+  getCatalogs() {
+    const config = this.getConfig();
+
+    return config.values.catalogs.map(
+      (catalogUrl : string) => new Catalog(catalogUrl)
+    )
   }
 }
 

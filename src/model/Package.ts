@@ -48,7 +48,7 @@ class Package {
       templateDirectory = tmp.dirSync().name;
 
       try {
-        runScriptSync(`git clone ${templateRepository} ${templateDirectory}`, false);
+        runScriptSync(`git clone ${templateRepository} ${templateDirectory}`, false, {stdio : 'ignore'});
       }
       catch(error) {
         throw new DowError(`Unable to download template ${templateRepository}`);
@@ -63,7 +63,7 @@ class Package {
         git submodule add ${this.remote} ${PACKAGES_DIRECTORY}/${this.name}
         git add ${PACKAGES_DIRECTORY}/${this.name}
         git add .gitmodules
-      `, false, {cwd : this.project.root})
+      `, false, {cwd : this.project.root, stdio : 'ignore'})
     }
     catch(error) {
       throw new DowError(`ERROR: unable to add remote package ${this.remote}`);
@@ -81,7 +81,7 @@ class Package {
         rm -rf ${templateDirectory}/.git
         cp -rf ${templateDirectory}/** ${PACKAGES_DIRECTORY}/${this.name}/
         cp  ${gitBackup}/.git ${PACKAGES_DIRECTORY}/${this.name}/
-      `, false, {cwd : this.project.root})
+      `, false, {cwd : this.project.root, stdio : 'ignore'})
     }
 
     /*
