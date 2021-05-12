@@ -14,7 +14,8 @@ export interface ProjectConfig {
 }
 
 export interface PackageConfig {
-  dowJsonVersion : string
+  dowJsonVersion : string,
+  remote         : string
 }
 
 export interface Template {

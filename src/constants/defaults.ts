@@ -17,4 +17,5 @@ export const DEFAULT_DOW_JSON : ProjectConfig = {
 
 export const DEFAULT_PACKAGE_JSON : PackageConfig = {
   dowJsonVersion : '1.0.0',
+  remote         : ''
 }

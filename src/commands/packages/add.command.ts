@@ -144,9 +144,7 @@ export const handler = async (argv : Arguments<HandlerArguments>) => {
     throw new DowError('Please either user --interactive mode or provide name and repository arguments.')
   }
 
-  const pkg = new Package(global.project, selectedName, selectedRepository);
-
-  pkg.init(selectedTemplateRepository);
+  global.project.addPackage(selectedName, selectedRepository, {templateRepository : selectedTemplateRepository})
 }
 
 interface HandlerArguments {

@@ -62,8 +62,7 @@ export const handler = async (argv : Arguments<HandlerArguments>) => {
 
   if (!removePackage) {return;}
 
-  const pkg = new Package(global.project, selectedName, '');
-  pkg.remove();
+  global.project.removePackage(selectedName);
 }
 
 interface HandlerArguments {

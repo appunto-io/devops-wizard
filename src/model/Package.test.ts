@@ -22,121 +22,136 @@ describe('Packages', () => {
   /********************************************/
   /********************************************/
   test('Package creation', async () => {
-    const project = new Project();
-    const pkg = new Package(project, 'name', 'remote');
+    const pkg = new Package('root', 'remote');
 
-    expect(pkg.name).toBe('name');
+    expect(pkg.root).toBe('root');
     expect(pkg.remote).toBe('remote');
   });
 
-  test('Fail module initialization if there is no project', () => {
-    const project = new Project();
-    const pkg = new Package(project, 'void', 'void');
-
-    expect(() => pkg.init()).toThrow(DowError)
-  })
-
-  test('Fail on duplicated package', () => {
-    const project = new Project();
-    project.init();
-
-    execSync(`mkdir -p ${PACKAGES_DIRECTORY}/void`);
-    const pkg = new Package(project, 'void', 'void');
+  test('Fail initialization on already initialized packages', () => {
+    const pkg = new Package('.', 'void');
+    execSync(`touch ${PACKAGE_CONFIG_FILE}`);
 
     expect(() => pkg.init()).toThrow(DowError);
   })
 
-  test('Create package', () => {
-    const project = new Project();
-    project.init();
-    const pkg = new Package(project, 'name', 'https://github.com/appunto-io/dow-templates.git');
-
+  test('Initialize package', () => {
+    const pkg = new Package('.', 'void');
     pkg.init();
 
-    expect(fs.existsSync(`${PACKAGES_DIRECTORY}/name`)).toBe(true);
-    expect(fs.existsSync(`${PACKAGES_DIRECTORY}/name/.git`)).toBe(true);
-    expect(fs.existsSync(`${PACKAGES_DIRECTORY}/name/${PACKAGE_CONFIG_FILE}`)).toBe(true);
+    expect(fs.existsSync(PACKAGE_CONFIG_FILE)).toBe(true);
+    expect(require(path.resolve('.', PACKAGE_CONFIG_FILE)).remote).toBe('void');
   })
 
-  test('Avoid creating new package json file if one exists', () => {
-    const projectdir  = path.resolve('.', 'testproject');
-    const packagedir  = path.resolve('.', 'testpackage');
-    const packagefile = path.resolve(packagedir, PACKAGE_CONFIG_FILE);
 
-    execSync('mkdir testproject');
-    execSync('mkdir testpackage');
+  // test('Fail module initialization if there is no project', () => {
+  //   const project = new Project();
+  //   const pkg = new Package(project, 'void', 'void');
 
-    process.chdir(packagedir);
-    execSync('git init');
-    fs.writeFileSync(path.resolve(packagefile), JSON.stringify({testValue : 'tested'}, null, 2));
-    execSync('git add -A');
-    execSync('git commit -m "package"');
+  //   expect(() => pkg.init()).toThrow(DowError)
+  // })
 
-    process.chdir(projectdir);
+  // test('Fail on duplicated package', () => {
+  //   const project = new Project();
+  //   project.init();
 
-    const project = new Project();
-    project.init();
-    const pkg = new Package(project, 'name', packagedir);
+  //   execSync(`mkdir -p ${PACKAGES_DIRECTORY}/void`);
+  //   const pkg = new Package(project, 'void', 'void');
 
-    pkg.init();
+  //   expect(() => pkg.init()).toThrow(DowError);
+  // })
 
-    expect(fs.existsSync(`${PACKAGES_DIRECTORY}/name`)).toBe(true);
-    expect(fs.existsSync(`${PACKAGES_DIRECTORY}/name/.git`)).toBe(true);
-    expect(require(`${projectdir}/${PACKAGES_DIRECTORY}/name/${PACKAGE_CONFIG_FILE}`).testValue).toBe('tested');
-  })
+  // test('Create package', () => {
+  //   const project = new Project();
+  //   project.init();
+  //   const pkg = new Package(project, 'name', 'https://github.com/appunto-io/dow-templates.git');
 
-  test('Fail when remote is not accessible', () => {
-    const project = new Project();
-    project.init();
+  //   pkg.init();
 
-    const pkg = new Package(project, 'name', 'void');
+  //   expect(fs.existsSync(`${PACKAGES_DIRECTORY}/name`)).toBe(true);
+  //   expect(fs.existsSync(`${PACKAGES_DIRECTORY}/name/.git`)).toBe(true);
+  //   expect(fs.existsSync(`${PACKAGES_DIRECTORY}/name/${PACKAGE_CONFIG_FILE}`)).toBe(true);
+  // })
 
-    expect(() => pkg.init()).toThrow(DowError);
-  })
+  // test('Avoid creating new package json file if one exists', () => {
+  //   const projectdir  = path.resolve('.', 'testproject');
+  //   const packagedir  = path.resolve('.', 'testpackage');
+  //   const packagefile = path.resolve(packagedir, PACKAGE_CONFIG_FILE);
 
-  test('Apply template', () => {
-    const projectdir  = path.resolve('.', 'testproject');
-    const templatedir = path.resolve('.', 'testtemplate');
+  //   execSync('mkdir testproject');
+  //   execSync('mkdir testpackage');
 
-    execSync('mkdir testproject');
-    execSync('mkdir testtemplate');
+  //   process.chdir(packagedir);
+  //   execSync('git init');
+  //   fs.writeFileSync(path.resolve(packagefile), JSON.stringify({testValue : 'tested'}, null, 2));
+  //   execSync('git add -A');
+  //   execSync('git commit -m "package"');
 
-    process.chdir(templatedir);
-    execSync('git init');
-    execSync('touch testfile');
-    execSync('git add -A');
-    execSync('git commit -m "template"');
+  //   process.chdir(projectdir);
 
-    process.chdir(projectdir);
+  //   const project = new Project();
+  //   project.init();
+  //   const pkg = new Package(project, 'name', packagedir);
 
-    const project = new Project();
-    project.init();
-    const pkg = new Package(project, 'name', 'https://github.com/appunto-io/dow-templates.git');
+  //   pkg.init();
 
-    pkg.init(templatedir);
+  //   expect(fs.existsSync(`${PACKAGES_DIRECTORY}/name`)).toBe(true);
+  //   expect(fs.existsSync(`${PACKAGES_DIRECTORY}/name/.git`)).toBe(true);
+  //   expect(require(`${projectdir}/${PACKAGES_DIRECTORY}/name/${PACKAGE_CONFIG_FILE}`).testValue).toBe('tested');
+  // })
 
-    expect(fs.existsSync(`${PACKAGES_DIRECTORY}/name`)).toBe(true);
-    expect(fs.existsSync(`${PACKAGES_DIRECTORY}/name/.git`)).toBe(true);
-    expect(fs.existsSync(`${PACKAGES_DIRECTORY}/name/testfile`)).toBe(true);
-  })
+  // test('Fail when remote is not accessible', () => {
+  //   const project = new Project();
+  //   project.init();
 
-  test('Remove package', () => {
-    const project = new Project();
-    project.init();
+  //   const pkg = new Package(project, 'name', 'void');
 
-    const pkg = new Package(project, 'name', 'https://github.com/appunto-io/dow-templates.git');
-    pkg.init();
+  //   expect(() => pkg.init()).toThrow(DowError);
+  // })
 
-    execSync('git init');
-    execSync('git add -A', {cwd : path.resolve('.', PACKAGES_DIRECTORY, 'name')});
-    execSync('git commit -m "package config file"', {cwd : path.resolve('.', PACKAGES_DIRECTORY, 'name')});
-    execSync('git add -A');
-    execSync('git commit -m "package"');
+  // test('Apply template', () => {
+  //   const projectdir  = path.resolve('.', 'testproject');
+  //   const templatedir = path.resolve('.', 'testtemplate');
 
-    pkg.remove();
+  //   execSync('mkdir testproject');
+  //   execSync('mkdir testtemplate');
 
-    expect(fs.existsSync(`${PACKAGES_DIRECTORY}/name`)).toBe(false);
-    expect(fs.existsSync(`${PACKAGES_DIRECTORY}/name/.git`)).toBe(false);
-    expect(fs.existsSync(`${PACKAGES_DIRECTORY}/name/${PACKAGE_CONFIG_FILE}`)).toBe(false);
-  });
+  //   process.chdir(templatedir);
+  //   execSync('git init');
+  //   execSync('touch testfile');
+  //   execSync('git add -A');
+  //   execSync('git commit -m "template"');
+
+  //   process.chdir(projectdir);
+
+  //   const project = new Project();
+  //   project.init();
+  //   const pkg = new Package(project, 'name', 'https://github.com/appunto-io/dow-templates.git');
+
+  //   pkg.init(templatedir);
+
+  //   expect(fs.existsSync(`${PACKAGES_DIRECTORY}/name`)).toBe(true);
+  //   expect(fs.existsSync(`${PACKAGES_DIRECTORY}/name/.git`)).toBe(true);
+  //   expect(fs.existsSync(`${PACKAGES_DIRECTORY}/name/testfile`)).toBe(true);
+  // })
+
+  // test('Remove package', () => {
+  //   const project = new Project();
+  //   project.init();
+
+  //   const pkg = new Package(project, 'name', 'https://github.com/appunto-io/dow-templates.git');
+  //   pkg.init();
+
+  //   execSync('git init');
+  //   execSync('git add -A', {cwd : path.resolve('.', PACKAGES_DIRECTORY, 'name')});
+  //   execSync('git commit -m "package config file"', {cwd : path.resolve('.', PACKAGES_DIRECTORY, 'name')});
+  //   execSync('git add -A');
+  //   execSync('git commit -m "package"');
+
+  //   pkg.remove();
+
+  //   expect(fs.existsSync(`${PACKAGES_DIRECTORY}/name`)).toBe(false);
+  //   expect(fs.existsSync(`${PACKAGES_DIRECTORY}/name/.git`)).toBe(false);
+  //   expect(fs.existsSync(`${PACKAGES_DIRECTORY}/name/${PACKAGE_CONFIG_FILE}`)).toBe(false);
+  // });
 })
