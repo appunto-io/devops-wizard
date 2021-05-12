@@ -6,7 +6,7 @@ import Package from './Package';
 import Project from './Project';
 import DowError from './DowError';
 
-import { PACKAGE_CONFIG_FILE } from '../constants/defaults';
+import { PACKAGES_DIRECTORY, PACKAGE_CONFIG_FILE } from '../constants/defaults';
 
 import TestHelper from './TestHelper';
 const testHelper = new TestHelper('Package', process.env.CLEANUP_ON_EXIT !== 'false');
@@ -40,7 +40,7 @@ describe('Packages', () => {
     const project = new Project();
     project.init();
 
-    execSync('mkdir -p packages/void');
+    execSync(`mkdir -p ${PACKAGES_DIRECTORY}/void`);
     const pkg = new Package(project, 'void', 'void');
 
     expect(() => pkg.init()).toThrow(DowError);
@@ -53,9 +53,9 @@ describe('Packages', () => {
 
     pkg.init();
 
-    expect(fs.existsSync('packages/name')).toBe(true);
-    expect(fs.existsSync('packages/name/.git')).toBe(true);
-    expect(fs.existsSync(`packages/name/${PACKAGE_CONFIG_FILE}`)).toBe(true);
+    expect(fs.existsSync(`${PACKAGES_DIRECTORY}/name`)).toBe(true);
+    expect(fs.existsSync(`${PACKAGES_DIRECTORY}/name/.git`)).toBe(true);
+    expect(fs.existsSync(`${PACKAGES_DIRECTORY}/name/${PACKAGE_CONFIG_FILE}`)).toBe(true);
   })
 
   test('Avoid creating new package json file if one exists', () => {
@@ -80,9 +80,9 @@ describe('Packages', () => {
 
     pkg.init();
 
-    expect(fs.existsSync('packages/name')).toBe(true);
-    expect(fs.existsSync('packages/name/.git')).toBe(true);
-    expect(require(`${projectdir}/packages/name/${PACKAGE_CONFIG_FILE}`).testValue).toBe('tested');
+    expect(fs.existsSync(`${PACKAGES_DIRECTORY}/name`)).toBe(true);
+    expect(fs.existsSync(`${PACKAGES_DIRECTORY}/name/.git`)).toBe(true);
+    expect(require(`${projectdir}/${PACKAGES_DIRECTORY}/name/${PACKAGE_CONFIG_FILE}`).testValue).toBe('tested');
   })
 
   test('Fail when remote is not accessible', () => {
@@ -115,8 +115,28 @@ describe('Packages', () => {
 
     pkg.init(templatedir);
 
-    expect(fs.existsSync('packages/name')).toBe(true);
-    expect(fs.existsSync('packages/name/.git')).toBe(true);
-    expect(fs.existsSync('packages/name/testfile')).toBe(true);
+    expect(fs.existsSync(`${PACKAGES_DIRECTORY}/name`)).toBe(true);
+    expect(fs.existsSync(`${PACKAGES_DIRECTORY}/name/.git`)).toBe(true);
+    expect(fs.existsSync(`${PACKAGES_DIRECTORY}/name/testfile`)).toBe(true);
   })
+
+  test('Remove package', () => {
+    const project = new Project();
+    project.init();
+
+    const pkg = new Package(project, 'name', 'https://github.com/appunto-io/dow-templates.git');
+    pkg.init();
+
+    execSync('git init');
+    execSync('git add -A', {cwd : path.resolve('.', PACKAGES_DIRECTORY, 'name')});
+    execSync('git commit -m "package config file"', {cwd : path.resolve('.', PACKAGES_DIRECTORY, 'name')});
+    execSync('git add -A');
+    execSync('git commit -m "package"');
+
+    pkg.remove();
+
+    expect(fs.existsSync(`${PACKAGES_DIRECTORY}/name`)).toBe(false);
+    expect(fs.existsSync(`${PACKAGES_DIRECTORY}/name/.git`)).toBe(false);
+    expect(fs.existsSync(`${PACKAGES_DIRECTORY}/name/${PACKAGE_CONFIG_FILE}`)).toBe(false);
+  });
 })

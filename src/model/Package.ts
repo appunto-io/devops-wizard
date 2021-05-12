@@ -1,5 +1,6 @@
 import tmp from 'tmp';
 import fs from 'fs';
+import { execSync } from 'child_process';
 import path from 'path';
 import runScriptSync from '../tools/run-script-sync';
 import DowError from './DowError';
@@ -97,6 +98,22 @@ class Package {
         cwd : path.resolve(this.project.root, PACKAGES_DIRECTORY, this.name)
       })
     }
+  }
+
+  /**
+   * Remove package from project
+   */
+  remove() {
+    const modified : boolean = !!execSync(`git status ${PACKAGES_DIRECTORY}/${this.name} --porcelain`, {cwd : this.project.root}).toString();
+
+    if (modified) {
+      throw new DowError(`Unable to remove submodule ${this.name} as there are unsaved modifications. Aborting.`);
+    }
+
+    runScriptSync(`
+      git rm ${PACKAGES_DIRECTORY}/${this.name}
+      rm -rf .git/modules/${PACKAGES_DIRECTORY}/${this.name}
+    `, false, {cwd : this.project.root})
   }
 }
 

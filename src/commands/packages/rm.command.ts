@@ -1,8 +1,12 @@
 import {Argv, Arguments} from "yargs";
-const { prompt } = require('enquirer');
+import fs from 'fs';
+import path from 'path';
+import { prompt } from 'enquirer';
 
-import runScript from '../../tools/run-script';
-import runCommand from '../../tools/run-command';
+import DowError from "../../model/DowError";
+import Package from '../../model/Package';
+
+import { PACKAGES_DIRECTORY } from "../../constants/defaults";
 
 import { Global } from '../../constants/types';
 declare const global : Global;
@@ -10,7 +14,7 @@ declare const global : Global;
 /*
   Yargs configuration
 */
-export const command = 'rm <name>';
+export const command = 'rm [name]';
 export const aliases = ['remove']
 export const describe = 'Remove a submodule';
 export const builder = (yargs : Argv) =>
@@ -18,37 +22,51 @@ export const builder = (yargs : Argv) =>
   .positional('name', {
     describe : 'Name of submodule to remove'
   })
+  .options('interactive', {
+    alias : 'i',
+    description : 'Use interactive mode',
+    type : 'boolean'
+  })
 
 /*
   Command handler
 */
 export const handler = async (argv : Arguments<HandlerArguments>) => {
-  const { name } = argv;
+  const { name, interactive } = argv;
 
   global.project.assert();
 
-  const { stdout : modified } = await runCommand(`git status packages/${name} --porcelain`, false, {cwd : global.project.root});
+  let selectedName : string = name;
 
-  if (modified) {
-    console.error(`ERROR : Submodule ${name} was modified`)
-    process.exitCode = 1;
-    return;
+  if(interactive) {
+    const packagesPath = path.resolve(global.project.root, PACKAGES_DIRECTORY);
+    const packages : string[] = fs.readdirSync(packagesPath);
+
+    selectedName = (await prompt<{name : string}>({
+      type : 'select',
+      name : 'name',
+      message : 'Select package to remove or CTRL-C to abort.',
+      choices : packages
+    })).name;
   }
 
-  const { removePackage } = await prompt({
+  if (!selectedName) {
+    throw new DowError('Please either user --interactive mode or provide package name.');
+  }
+
+  const { removePackage } = await prompt<{removePackage : boolean}>({
     type: 'confirm',
     name: 'removePackage',
-    message: `Reference to package ${name} will be removed from project. Continue?`
+    message: `Reference to package ${selectedName} will be removed from project. Continue?`
   })
 
   if (!removePackage) {return;}
 
-  runScript(`
-    git rm packages/${name}
-    rm -rf .git/modules/packages/${name}
-  `, true, {cwd : global.project.root})
+  const pkg = new Package(global.project, selectedName, '');
+  pkg.remove();
 }
 
 interface HandlerArguments {
   name : string,
+  interactive : boolean
 }
