@@ -2,7 +2,7 @@ import fs from 'fs';
 import tmp from 'tmp';
 
 import Project from "./Project";
-import Template, { TemplateParameters } from './Template';
+import Template, { TemplateValues } from './Template';
 import DowError from './DowError';
 
 import runScriptSync from '../tools/run-script-sync';
@@ -33,7 +33,7 @@ class Catalog {
 
     const tmpDirectory : string = tmp.dirSync().name;
 
-    let templates : TemplateParameters[]= [];
+    let templates : TemplateValues[]= [];
 
     try {
       runScriptSync(`git clone ${this.catalogUrl} ${tmpDirectory}/`, false, {stdio : 'ignore'});
@@ -50,11 +50,11 @@ class Catalog {
       return [];
     }
 
-    const templatesConfig : {templates : TemplateParameters[]} = require(templateFile);
+    const templatesConfig : {templates : TemplateValues[]} = require(templateFile);
 
     templates = (templatesConfig || {templates : []}).templates;
 
-    this.templates = templates.map((template : TemplateParameters) => new Template(template));
+    this.templates = templates.map((template : TemplateValues) => new Template(template));
 
     return this.templates;
   }

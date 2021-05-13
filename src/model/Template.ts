@@ -3,14 +3,14 @@ class Template {
   description : string;
   repository : string;
 
-  constructor ({name, description, repository} : TemplateParameters) {
+  constructor ({name, description, repository} : TemplateValues) {
     this.name        = name;
     this.description = description;
     this.repository  = repository;
   }
 }
 
-export interface TemplateParameters {
+export interface TemplateValues {
   name        : string;
   description : string;
   repository  : string;

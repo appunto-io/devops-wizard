@@ -3,9 +3,9 @@ import { prompt } from 'enquirer';
 
 
 import Catalog from '../../model/Catalog';
-import Package from '../../model/Package';
+import { TemplateValues } from '../../model/Template';
 
-import { Template, Global } from '../../constants/types';
+import { Global } from '../../constants/types';
 import DowError from "../../model/DowError";
 declare const global : Global;
 
@@ -58,13 +58,13 @@ export const handler = async (argv : Arguments<HandlerArguments>) => {
   /*
     Retrieve a list of templates from catalogs
   */
-  const getTemplates = () : Template[] => {
+  const getTemplates = () : TemplateValues[] => {
     if (catalog) {
       return new Catalog(catalog).templates
     }
     else {
       return global.project.getCatalogs().reduce(
-        (templates : Template[], catalog : Catalog) => [...templates, ...catalog.templates],
+        (templates : TemplateValues[], catalog : Catalog) => [...templates, ...catalog.templates],
         []
       );
     }
@@ -96,12 +96,12 @@ export const handler = async (argv : Arguments<HandlerArguments>) => {
     selectedRepository = repository;
 
     if(useTemplate) {
-      const templates : Template[] = getTemplates();
+      const templates : TemplateValues[] = getTemplates();
       const choices : string[] = [];
-      const choicesMap : {[key : string] : Template} = {};
+      const choicesMap : {[key : string] : TemplateValues} = {};
 
       templates.forEach(
-        (template : Template) => {
+        (template : TemplateValues) => {
           const promptString = `${template.name} (${template.repository})${template.description ? '\n    ' + template.description : ''} `;
           choices.push(promptString);
           choicesMap[promptString] = template;
@@ -128,8 +128,8 @@ export const handler = async (argv : Arguments<HandlerArguments>) => {
       selectedTemplateRepository = templateRepository;
     }
     else if (template) {
-      const templates : Template[] = getTemplates();
-      const selectedTemplate = templates.find(({name} : Template) => name === template);
+      const templates : TemplateValues[] = getTemplates();
+      const selectedTemplate = templates.find(({name} : TemplateValues) => name === template);
 
       if (selectedTemplate) {
         selectedTemplateRepository = selectedTemplate.repository;

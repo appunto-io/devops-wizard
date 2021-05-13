@@ -168,8 +168,8 @@ class Project {
       `, false, {cwd : this.root, stdio : 'ignore'})
     }
 
-    const pkg = new Package(path.resolve(this.root, PACKAGES_DIRECTORY, name), repository);
-    pkg.init();
+    const pkg = new Package(path.resolve(this.root, PACKAGES_DIRECTORY, name));
+    pkg.init({remote : repository});
 
     return pkg;
   }

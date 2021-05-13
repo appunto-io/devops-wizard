@@ -6,20 +6,3 @@ export interface Global extends NodeJS.Global {
   dowDebug ?: string;
 }
 declare const global : Global;
-
-
-export interface ProjectConfig {
-  dowJsonVersion : string,
-  catalogs : string[]
-}
-
-export interface PackageConfig {
-  dowJsonVersion : string,
-  remote         : string
-}
-
-export interface Template {
-  name : string,
-  description ?: string,
-  repository ?: string
-}

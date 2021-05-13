@@ -1,4 +1,5 @@
-import {ProjectConfig, PackageConfig} from './types';
+import { ProjectConfigValues } from '../model/ProjectConfig';
+import { PackageConfigValues } from '../model/PackageConfig';
 
 export const COMMANDS_PATH = './commands/';
 export const SCRIPT_NAME = 'dow';
@@ -10,12 +11,12 @@ export const TEMPLATES_FILE      = 'templates.json';
 
 export const DEFAULT_TEMPLATES_CATALOG = 'https://github.com/appunto-io/dow-templates.git';
 
-export const DEFAULT_DOW_JSON : ProjectConfig = {
+export const DEFAULT_DOW_JSON : ProjectConfigValues = {
   dowJsonVersion : '1.0.0',
   catalogs : [DEFAULT_TEMPLATES_CATALOG]
 };
 
-export const DEFAULT_PACKAGE_JSON : PackageConfig = {
+export const DEFAULT_PACKAGE_JSON : PackageConfigValues = {
   dowJsonVersion : '1.0.0',
   remote         : ''
 }

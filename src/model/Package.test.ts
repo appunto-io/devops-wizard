@@ -6,7 +6,7 @@ import Package from './Package';
 import Project from './Project';
 import DowError from './DowError';
 
-import { PACKAGES_DIRECTORY, PACKAGE_CONFIG_FILE } from '../constants/defaults';
+import { DEFAULT_PACKAGE_JSON, PACKAGES_DIRECTORY, PACKAGE_CONFIG_FILE } from '../constants/defaults';
 
 import TestHelper from './TestHelper';
 const testHelper = new TestHelper('Package', process.env.CLEANUP_ON_EXIT !== 'false');
@@ -22,24 +22,32 @@ describe('Packages', () => {
   /********************************************/
   /********************************************/
   test('Package creation', async () => {
-    const pkg = new Package('root', 'remote');
+    const pkg = new Package('root');
 
     expect(pkg.root).toBe('root');
-    expect(pkg.remote).toBe('remote');
   });
 
   test('Fail initialization on already initialized packages', () => {
-    const pkg = new Package('.', 'void');
+    const pkg = new Package('.');
     execSync(`touch ${PACKAGE_CONFIG_FILE}`);
 
     expect(() => pkg.init()).toThrow(DowError);
   })
 
   test('Initialize package', () => {
-    const pkg = new Package('.', 'void');
-    pkg.init();
+    const pkg = new Package('.');
+    pkg.init({remote : 'repo'});
 
     expect(fs.existsSync(PACKAGE_CONFIG_FILE)).toBe(true);
-    expect(require(path.resolve('.', PACKAGE_CONFIG_FILE)).remote).toBe('void');
+    expect(require(path.resolve('.', PACKAGE_CONFIG_FILE)).remote).toBe('repo');
+  })
+
+  test('Get package configuration', () => {
+    fs.writeFileSync(PACKAGE_CONFIG_FILE, JSON.stringify({...DEFAULT_PACKAGE_JSON, remote : 'repo'}));
+
+    const pkg = new Package('.');
+    const config = pkg.getConfig();
+
+    expect(config.values.remote).toBe('repo');
   })
 })
