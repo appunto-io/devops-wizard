@@ -64,7 +64,6 @@ require('yargs')
   .scriptName(SCRIPT_NAME)
   .options({
     'debug' : {
-      default : false,
       global : true,
       type : 'boolean'
     }

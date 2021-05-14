@@ -9,7 +9,7 @@ import DowError from './DowError';
 
 import runScriptSync from '../tools/run-script-sync';
 
-import { PROJECT_CONFIG_FILE, PACKAGES_DIRECTORY } from '../constants/defaults';
+import { PROJECT_CONFIG_FILE, PACKAGES_DIRECTORY, PACKAGE_CONFIG_FILE } from '../constants/defaults';
 import Package from './Package';
 
 class Project {
@@ -189,6 +189,34 @@ class Project {
       git rm ${PACKAGES_DIRECTORY}/${name}
       rm -rf .git/modules/${PACKAGES_DIRECTORY}/${name}
     `, false, {cwd : this.root})
+  }
+
+  /**
+   * Retrieves a package by name
+   *
+   * @param {string} name Name of the package to retrieve
+   * @returns {Package | null} The package or null if not find
+   */
+  getPackage(name : string) : Package | null {
+    const packagePath = path.resolve(this.root, PACKAGES_DIRECTORY, name);
+    if(!fs.existsSync(path.resolve(packagePath, PACKAGE_CONFIG_FILE))) {
+      return null;
+    }
+
+    return new Package(packagePath);
+  }
+
+  getPackages() : {[name : string] : Package} {
+    const packagesDirs = fs.readdirSync(path.resolve(this.root, PACKAGES_DIRECTORY));
+
+    return packagesDirs
+      .reduce(
+        (packages, packageDir) => {
+          packages[packageDir] = new Package(path.resolve(this.root, PACKAGES_DIRECTORY, packageDir));
+          return packages;
+        },
+        {} as {[name : string] : Package}
+      )
   }
 }
 

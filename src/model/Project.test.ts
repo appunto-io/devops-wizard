@@ -174,5 +174,39 @@ describe('Handling packages', () => {
     expect(fs.existsSync(`${PACKAGES_DIRECTORY}/name/.git`)).toBe(false);
     expect(fs.existsSync(`${PACKAGES_DIRECTORY}/name/${PACKAGE_CONFIG_FILE}`)).toBe(false);
   });
+
+  test('Retrieve package', () => {
+    const project = new Project();
+    project.init();
+    project.addPackage('name', 'https://github.com/appunto-io/dow-templates.git');
+
+    const pkg : Package = project.getPackage('name');
+
+    expect(pkg.getConfig().values.remote).toEqual('https://github.com/appunto-io/dow-templates.git');
+  })
+
+  test('Return null if package does not exists', () => {
+    const project = new Project();
+    project.init();
+
+    const pkg : Package = project.getPackage('name');
+
+    expect(pkg).toBeNull();
+  })
+
+  test('Return a list of packages', () => {
+    const project = new Project();
+    project.init();
+    project.addPackage('p1', 'https://github.com/appunto-io/dow-templates.git');
+    project.addPackage('p2', 'https://github.com/appunto-io/dow-templates.git');
+
+    const packages = project.getPackages();
+
+    expect(Object.keys(packages)).toHaveLength(2);
+    expect(packages.p1).toBeDefined();
+    expect(packages.p1).toBeInstanceOf(Package);
+    expect(packages.p2).toBeDefined();
+    expect(packages.p2).toBeInstanceOf(Package);
+  })
 });
 

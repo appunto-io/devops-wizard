@@ -43,7 +43,10 @@ class PackageConfig {
 
 export interface PackageConfigValues {
   dowJsonVersion : string,
-  remote         : string
+  remote         : string,
+  env : {
+    [key : string] : string
+  }
 }
 
 export default PackageConfig;

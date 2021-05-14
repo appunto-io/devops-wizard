@@ -8,7 +8,7 @@ import PackageConfig, { PackageConfigValues } from './PackageConfig';
 import { DEFAULT_PACKAGE_JSON, PACKAGE_CONFIG_FILE } from '../constants/defaults';
 
 class Package {
-  readonly root : string;
+  root : string | null = null;
 
   private config : PackageConfig;
 
@@ -18,8 +18,37 @@ class Package {
    * @param {string} root Package path
    * @param {string} remote URL of the package repository
    */
-  constructor(root : string) {
+  constructor(root : string | null = null) {
     this.root = root;
+  }
+
+  /**
+   * Finds the pathname of the package root
+   * @returns {string | null} The path of the root project or null
+   */
+   findRoot() : string | null {
+    const search = (directory ?: string) : string | null => {
+      if (!directory) {
+        directory = path.resolve('.');
+      }
+
+      var file = path.resolve(directory, PACKAGE_CONFIG_FILE);
+
+      if (fs.existsSync(file) && fs.statSync(file).isFile()) {
+        return directory;
+      }
+
+      var parent = path.resolve(directory, '..');
+
+      if (parent === directory) {
+        return null;
+      }
+
+      return search(parent);
+    }
+
+    this.root = search();
+    return this.root;
   }
 
   /**
