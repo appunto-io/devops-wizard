@@ -2,6 +2,7 @@ import path from 'path';
 import fs from 'fs';
 
 import Project from './Project';
+import { EnvironmentTemplateValues } from './EnvironmentTemplate';
 import { DEFAULT_DOW_JSON, PROJECT_CONFIG_FILE } from '../constants/defaults';
 import DowError from './DowError';
 
@@ -43,7 +44,8 @@ class ProjectConfig {
 
 export interface ProjectConfigValues {
   dowJsonVersion : string,
-  catalogs : string[]
+  catalogs : string[],
+  environmentTemplate : EnvironmentTemplateValues
 }
 
 export default ProjectConfig;

@@ -50,7 +50,7 @@ export const handler = async (argv : Arguments<HandlerArguments>) => {
 }
 
 const listPackageVars = (pkg : Package, prefix : string, pattern ?: string) => {
-  let entries = Object.entries(pkg.getConfig().values.env);
+  let entries = Object.entries(pkg.getConfig().values.vars);
 
   if (pattern) {
     entries = entries.filter(([name , value] : [string, string]) => name.match(pattern))

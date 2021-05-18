@@ -13,11 +13,15 @@ export const DEFAULT_TEMPLATES_CATALOG = 'https://github.com/appunto-io/dow-temp
 
 export const DEFAULT_DOW_JSON : ProjectConfigValues = {
   dowJsonVersion : '1.0.0',
-  catalogs : [DEFAULT_TEMPLATES_CATALOG]
+  catalogs : [DEFAULT_TEMPLATES_CATALOG],
+  environmentTemplate : {
+    vars : {},
+    files : {}
+  },
 };
 
 export const DEFAULT_PACKAGE_JSON : PackageConfigValues = {
   dowJsonVersion : '1.0.0',
   remote         : '',
-  env            : {}
+  vars           : {}
 }

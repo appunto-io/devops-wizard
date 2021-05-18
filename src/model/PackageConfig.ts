@@ -44,7 +44,7 @@ class PackageConfig {
 export interface PackageConfigValues {
   dowJsonVersion : string,
   remote         : string,
-  env : {
+  vars : {
     [key : string] : string
   }
 }

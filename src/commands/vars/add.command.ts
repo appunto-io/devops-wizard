@@ -66,7 +66,7 @@ export const handler = async (argv : Arguments<HandlerArguments>) => {
         name : 'defaultValue',
         message : 'Default value',
         type : 'input',
-        initial : config.values?.env[name]
+        initial : config.values?.vars[name]
       }
     ]);
 
@@ -76,12 +76,12 @@ export const handler = async (argv : Arguments<HandlerArguments>) => {
 
   if(!selectedName) {return;}
 
-  if(config.values?.env?.[selectedName] && !force && !interactive && name) {
+  if(config.values?.vars?.[selectedName] && !force && !interactive && name) {
     throw new DowError(`Variable ${selectedName} exist. Use --force|-f to overwrite.`);
   }
 
-  config.values.env = {
-    ...config.values.env,
+  config.values.vars = {
+    ...config.values.vars,
     [selectedName] : `${selectedDefaultValue || ''}`
   }
 

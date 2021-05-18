@@ -56,8 +56,8 @@ export const handler = async (argv : Arguments<HandlerArguments>) => {
 
   if(!selectedName) {return;}
 
-  const {[selectedName] : toBeRemoved, ...rest } = config.values?.env || {};
-  config.values.env = rest;
+  const {[selectedName] : toBeRemoved, ...rest } = config.values?.vars || {};
+  config.values.vars = rest;
 
   config.save();
 }
