@@ -59,11 +59,19 @@ class Package {
       Create default package config if necessary
     */
     const packageConfigFile = path.resolve(this.root, PACKAGE_CONFIG_FILE)
+    let existingConfig : Partial<PackageConfigValues> = {};
+
     if (fs.existsSync(packageConfigFile)) {
-      throw new DowError('Packages is already initialized');
+      const loadedBuffer = fs.readFileSync(packageConfigFile);
+      try {
+        existingConfig = JSON.parse(loadedBuffer.toString());
+      }
+      catch(error) {
+        console.warn('Existing configuration file seems to be corrupted. Ignoring.')
+      }
     }
 
-    fs.writeFileSync(packageConfigFile, JSON.stringify({...DEFAULT_PACKAGE_JSON, ...values}, null, 2));
+    fs.writeFileSync(packageConfigFile, JSON.stringify({...DEFAULT_PACKAGE_JSON, ...existingConfig, ...values}, null, 2));
 
     runScriptSync(`
       git add ${PACKAGE_CONFIG_FILE}

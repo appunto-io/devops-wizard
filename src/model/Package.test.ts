@@ -27,11 +27,11 @@ describe('Packages', () => {
     expect(pkg.root).toBe('root');
   });
 
-  test('Fail initialization on already initialized packages', () => {
+  test('Do not fail on corrupted config file', () => {
     const pkg = new Package('.');
     execSync(`touch ${PACKAGE_CONFIG_FILE}`);
 
-    expect(() => pkg.init()).toThrow(DowError);
+    expect(() => pkg.init()).not.toThrow();
   })
 
   test('Initialize package', () => {
@@ -49,5 +49,18 @@ describe('Packages', () => {
     const config = pkg.getConfig();
 
     expect(config.values.remote).toBe('repo');
+  })
+
+  test('Merge existing initialization file', () => {
+    fs.writeFileSync(PACKAGE_CONFIG_FILE, JSON.stringify({...DEFAULT_PACKAGE_JSON, remote : 'repo'}, null, 2));
+
+    const pkg = new Package('.');
+    pkg.init({vars : {'key1' : 'value1'}});
+
+    const checkPackage = new Package('.');
+    const config = checkPackage.getConfig();
+
+    expect(config.values.remote).toBe('repo');
+    expect(config.values.vars['key1']).toBe('value1');
   })
 })
