@@ -208,5 +208,21 @@ describe('Handling packages', () => {
     expect(packages.p2).toBeDefined();
     expect(packages.p2).toBeInstanceOf(Package);
   })
+
+  test('Return a list of packages excluding submodules without config file', () => {
+    const project = new Project();
+    project.init();
+    project.addPackage('p1', 'https://github.com/appunto-io/dow-templates.git');
+    project.addPackage('p2', 'https://github.com/appunto-io/dow-templates.git');
+    execSync('mkdir packages/p3');
+
+    const packages = project.getPackages();
+
+    expect(Object.keys(packages)).toHaveLength(2);
+    expect(packages.p1).toBeDefined();
+    expect(packages.p1).toBeInstanceOf(Package);
+    expect(packages.p2).toBeDefined();
+    expect(packages.p2).toBeInstanceOf(Package);
+  })
 });
 

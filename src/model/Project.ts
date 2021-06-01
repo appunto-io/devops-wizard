@@ -212,7 +212,13 @@ class Project {
     return packagesDirs
       .reduce(
         (packages, packageDir) => {
-          packages[packageDir] = new Package(path.resolve(this.root, PACKAGES_DIRECTORY, packageDir));
+          const packagePath = path.resolve(this.root, PACKAGES_DIRECTORY, packageDir);
+
+          if(!fs.existsSync(path.resolve(packagePath, PACKAGE_CONFIG_FILE))) {
+            return packages;
+          }
+
+          packages[packageDir] = new Package(packagePath);
           return packages;
         },
         {} as {[name : string] : Package}
