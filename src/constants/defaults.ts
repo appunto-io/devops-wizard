@@ -2,7 +2,7 @@ import { ProjectConfigValues } from '../model/ProjectConfig';
 import { PackageConfigValues } from '../model/PackageConfig';
 
 export const COMMANDS_PATH = './commands/';
-export const SCRIPT_NAME = 'dow';
+export const SCRIPT_NAME = 'dowiz';
 
 export const PACKAGES_DIRECTORY  = 'packages';
 export const PROJECT_CONFIG_FILE = '.dow-project.json';

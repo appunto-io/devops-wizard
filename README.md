@@ -1,1 +1,1 @@
-# devops-wizard
+# DOWIZ (Dev Ops WIZard)

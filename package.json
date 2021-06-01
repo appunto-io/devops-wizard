@@ -1,16 +1,16 @@
 {
-  "name": "@appunto/devops-wizard",
+  "name": "dowiz",
   "version": "0.0.3-1",
   "description": "DevOps Wizard CLI",
   "bin": {
-    "dow": "./dist/src/index.js"
+    "dowiz": "./dist/src/index.js"
   },
   "scripts": {
     "version": "auto-changelog -p && git add CHANGELOG.md",
     "start": "tsc -w",
     "clean": "rm -rf dist",
     "build": "rm -rf dist && tsc && chmod a+x dist/src/index.js",
-    "dow": "node dist/src/index.js",
+    "dowiz": "node dist/src/index.js",
     "test": "jest",
     "testNoCleanup": "export CLEANUP_ON_EXIT=false && jest"
   },
