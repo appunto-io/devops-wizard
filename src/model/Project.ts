@@ -163,7 +163,7 @@ class Project {
         mv ${PACKAGES_DIRECTORY}/${name}/.git ${gitBackup}/
         rm -rf ${PACKAGES_DIRECTORY}/${name}/**
         rm -rf ${templateDirectory}/.git
-        cp -rf ${templateDirectory}/** ${PACKAGES_DIRECTORY}/${name}/
+        cp -rf ${templateDirectory}/. ${PACKAGES_DIRECTORY}/${name}/
         cp  ${gitBackup}/.git ${PACKAGES_DIRECTORY}/${name}/
       `, false, {cwd : this.root, stdio : 'ignore'})
     }
