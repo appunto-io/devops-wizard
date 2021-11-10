@@ -1,6 +1,6 @@
 {
   "name": "dowiz",
-  "version": "0.0.3-4",
+  "version": "0.0.3",
   "description": "DevOps Wizard CLI",
   "bin": {
     "dowiz": "./dist/src/index.js"
