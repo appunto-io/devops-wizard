@@ -139,6 +139,54 @@ class Project {
       }
     }
 
+
+    /*
+      Test if remote repository exists
+    */
+    try {
+      runScriptSync(`
+        git ls-remote -h "${repository}"
+      `, false, {cwd : this.root, stdio : 'ignore'})
+    }
+    catch(error) {
+      throw new DowError(`ERROR: remote repository ${repository} is not reachable`);
+    }
+
+    /*
+      Handle empty remote repositories
+    */
+    let remoteIsEmpty : boolean = false;
+    try {
+      runScriptSync(`
+        git ls-remote --exit-code -h "${repository}"
+      `, false, {cwd : this.root, stdio : 'ignore'})
+    }
+    catch(error) {
+      // if git ls-remote returns a non zero exit code here, it means that the repo is empty
+      remoteIsEmpty = true;
+    }
+
+    if(remoteIsEmpty) {
+      const remoteCloneDirectory = tmp.dirSync().name;
+
+      try {
+        runScriptSync(`
+          git clone ${repository} ${remoteCloneDirectory}
+        `, false, {cwd : this.root, stdio : 'ignore'});
+
+        runScriptSync(`
+          touch .gitignore
+          git add -A
+          git commit -m "Initial commit"
+          git push --set-upstream origin
+        `, false, {cwd : remoteCloneDirectory, stdio : 'ignore'});
+      }
+      catch (error) {
+        throw new DowError(`ERROR: unable to create initial commit on empty remote ${repository}`);
+      }
+    }
+
+
     /*
       Create submodule
     */

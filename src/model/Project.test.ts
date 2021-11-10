@@ -133,6 +133,27 @@ describe('Handling packages', () => {
     expect(fs.existsSync(`${PACKAGES_DIRECTORY}/name/${PACKAGE_CONFIG_FILE}`)).toBe(true);
   })
 
+  test('Create package from empty remote repository', () => {
+    const projectdir  = path.resolve('.', 'testproject');
+    const remotedir = path.resolve('.', 'testremote');
+
+    execSync('mkdir testproject');
+    execSync('mkdir testremote');
+
+    process.chdir(remotedir);
+    execSync('git init --bare');
+
+    process.chdir(projectdir);
+
+    const project = new Project();
+    project.init();
+    project.addPackage('name', remotedir);
+
+    expect(fs.existsSync(`${PACKAGES_DIRECTORY}/name`)).toBe(true);
+    expect(fs.existsSync(`${PACKAGES_DIRECTORY}/name/.git`)).toBe(true);
+    expect(fs.existsSync(`${PACKAGES_DIRECTORY}/name/${PACKAGE_CONFIG_FILE}`)).toBe(true);
+  });
+
   test('Apply template', () => {
     const projectdir  = path.resolve('.', 'testproject');
     const templatedir = path.resolve('.', 'testtemplate');
