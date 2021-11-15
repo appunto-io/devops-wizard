@@ -8,6 +8,11 @@ import DowError from "../../model/DowError";
 import getTargetPackage from './tools/getTargetPackage';
 
 /*
+  Avoid escaping not-HTML templates with HTML entities.
+*/
+Mustache.escape = function(text) {return text;};
+
+/*
   Yargs configuration
 */
 export const command = 'init';
