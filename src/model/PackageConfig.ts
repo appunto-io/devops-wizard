@@ -46,7 +46,9 @@ export interface PackageConfigValues {
   remote         : string,
   vars : {
     [key : string] : string
-  }
+  },
+  outputEnvFile ?: string,
+  outputEnvTemplate ?: string,
 }
 
 export default PackageConfig;
