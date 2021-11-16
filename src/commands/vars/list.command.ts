@@ -13,7 +13,8 @@ export const describe = 'List all environment variables';
 export const builder = (yargs : Argv) =>
   yargs
   .positional('pattern', {
-    describe : 'Pattern used to filter environment variables'
+    describe : 'Pattern used to filter environment variables',
+    type : 'string'
   })
   .options('package', {
     alias : ['p'],

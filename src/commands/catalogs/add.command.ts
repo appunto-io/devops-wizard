@@ -11,7 +11,8 @@ export const describe = 'Add a catalog to current project';
 export const builder = (yargs : Argv) =>
   yargs
   .positional('repository', {
-    describe : 'Catalog repository'
+    describe : 'Catalog repository',
+    type : 'string'
   })
 
 /*

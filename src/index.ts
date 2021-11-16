@@ -2,7 +2,7 @@
 
 import fs from 'fs';
 import tmp from 'tmp';
-import { Argv } from 'yargs';
+import yargs, { Argv } from 'yargs';
 
 import {
   COMMANDS_PATH,
@@ -17,6 +17,13 @@ import packageJson from '../package.json';
 import { Global } from './constants/types';
 declare const global: Global;
 
+import * as CatalogsCommand from './commands/catalogs.command';
+import * as InitCommand from './commands/init.command';
+import * as PackagesCommand from './commands/packages.command';
+import * as TemplatesCommand from './commands/templates.command';
+import * as VarsCommand from './commands/vars.command';
+
+
 /*
   Ask tmp to remove all temporary directories on exit
 */
@@ -28,9 +35,9 @@ tmp.setGracefulCleanup();
 global.project = new Project();
 
 /*
-  Remove temporary directories on exit
+  Handle unhandled rejection and exceptions
 */
-process.on('uncaughtException', (err : any, origin : any) => {
+const exceptionHandler = (err : any, origin : any) => {
   process.exitCode = 1;
 
   if(err instanceof DowError) {
@@ -51,13 +58,16 @@ process.on('uncaughtException', (err : any, origin : any) => {
     //   );
     // }
   }
-});
+};
+process.on('uncaughtException', exceptionHandler);
+process.on('unhandledRejection', exceptionHandler)
 
 /*
   Just start a simple instance of yargs parser and delegate commands
   execution to separate handlers stored in ./commands/ directory.
 */
-require('yargs')
+// require('yargs')
+yargs
   .locale('en')
   .help()
   .version(packageJson.version)
@@ -69,16 +79,21 @@ require('yargs')
     }
   })
   .middleware([
-    ({debug} : {debug : 'boolean'}) => {
+    ({debug} : {debug : boolean}) => {
       global.dowDebug = debug;
     }
   ])
   .demandCommand(1, 'You need at least one command')
   .strictCommands()
-  .commandDir(
-    COMMANDS_PATH,
-    {extensions: ['command.js']}
-  )
+  .command(CatalogsCommand)
+  .command(InitCommand)
+  .command(PackagesCommand)
+  .command(TemplatesCommand)
+  .command(VarsCommand)
+  // .commandDir(
+  //   COMMANDS_PATH,
+  //   {extensions: ['command.js']}
+  // )
   .fail((msg : string, err : any, yargs : Argv) => {
     if (err) {
       process.exitCode = 1;

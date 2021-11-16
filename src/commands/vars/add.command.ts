@@ -12,10 +12,12 @@ export const describe = 'Add an environment variable to current package';
 export const builder = (yargs : Argv) =>
   yargs
   .positional('name', {
-    describe : 'Name of environment variable'
+    describe : 'Name of environment variable',
+    type : 'string'
   })
   .positional('default', {
-    describe : 'Default value'
+    describe : 'Default value',
+    type : 'string'
   })
   .option('interactive', {
     alias : ['i'],
@@ -39,7 +41,7 @@ export const builder = (yargs : Argv) =>
   Command handler
 */
 export const handler = async (argv : Arguments<HandlerArguments>) => {
-  const { name, defaultValue, interactive, force, package : targetPackage} = argv;
+  const { name, default : defaultValue, interactive, force, package : targetPackage} = argv;
 
   let selectedName : string = name;
   let selectedDefaultValue : string = defaultValue;
@@ -90,7 +92,7 @@ export const handler = async (argv : Arguments<HandlerArguments>) => {
 
 interface HandlerArguments {
   name : string,
-  defaultValue : string,
+  default : string,
   interactive : boolean,
   force : boolean,
   package : string

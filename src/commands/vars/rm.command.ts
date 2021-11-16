@@ -12,7 +12,8 @@ export const describe = 'Remove an environment variable from current package';
 export const builder = (yargs : Argv) =>
   yargs
   .positional('name', {
-    describe : 'Name of environment variable'
+    describe : 'Name of environment variable',
+    type : 'string'
   })
   .option('interactive', {
     alias : ['i'],

@@ -16,11 +16,13 @@ export const describe = 'Add a catalog to current project';
 export const builder = (yargs : Argv) =>
   yargs
   .positional('repository', {
-    describe : 'Catalog repository to be removed'
+    describe : 'Catalog repository to be removed',
+    type : 'string'
   })
   .option('interactive', {
     alias : ['i'],
-    describe : 'Use interactive mode to select catalog to remove'
+    describe : 'Use interactive mode to select catalog to remove',
+    type : 'boolean'
   })
 
 /*

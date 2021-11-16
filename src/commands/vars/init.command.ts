@@ -44,14 +44,17 @@ export const builder = (yargs : Argv) =>
   })
   .options('source', {
     alias : ['s'],
-    describe : 'Source file (.env format)'
+    describe : 'Source file (.env format)',
+    type : 'string'
   })
   .options('output', {
     alias : ['o'],
     describe : 'Output file.',
+    type : 'string'
   })
   .options('output-template', {
     describe : 'Mustache formatted template file',
+    type : 'string'
   })
 
 const DOTENV_TEMPLATE =

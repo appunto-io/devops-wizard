@@ -18,10 +18,12 @@ export const describe = 'Add a submodule for an existing remote repository';
 export const builder = (yargs : Argv) =>
   yargs
   .positional('repository', {
-    describe : 'Remote repository'
+    describe : 'Remote repository',
+    type : 'string'
   })
   .positional('name', {
-    describe : 'Local name of the added package'
+    describe : 'Local name of the added package',
+    type : 'string'
   })
   .option('template', {
     alias : 't',

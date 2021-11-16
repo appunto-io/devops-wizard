@@ -1,5 +1,7 @@
 import {Argv} from "yargs";
 
+import * as ListCommand from './templates/list.command';
+
 /*
   Yargs configuration
 */
@@ -9,9 +11,10 @@ export const describe = 'Manage templates';
 export const builder = (yargs : Argv) =>
   yargs
   .demandCommand(1, 'You need at least one command')
-  .commandDir('./templates', {extensions: ['command.js']})
+  .command(ListCommand)
+  // .commandDir('./templates', {extensions: ['command.js']})
 
 /*
   Command handler
 */
-export const handler = (argv : Argv) => {}
+export const handler = () => {}

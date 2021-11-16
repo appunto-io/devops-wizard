@@ -20,7 +20,8 @@ export const describe = 'Remove a submodule';
 export const builder = (yargs : Argv) =>
   yargs
   .positional('name', {
-    describe : 'Name of submodule to remove'
+    describe : 'Name of submodule to remove',
+    type : 'string'
   })
   .options('interactive', {
     alias : 'i',
